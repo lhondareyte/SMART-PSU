@@ -1,0 +1,8 @@
+.DS_Store
+*bak
+*.o
+*.out
+*.bin
+*.hex
+*.map
+*~
