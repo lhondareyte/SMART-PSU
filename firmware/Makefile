@@ -31,7 +31,7 @@ include config.mk
 CCPATH		:=/usr/local/CrossPack-AVR/bin
 CC		:=$(CCPATH)/avr-gcc
 OBJCOPY		:=$(CCPATH)/avr-objcopy
-CFLAGS		+=-Os -D F_CPU=$(HZ)
+CFLAGS		+=-Os 
 CFLAGS		+=-g -mmcu=$(MCU) -Wall -Wstrict-prototypes
 
 HEADERS         += $(shell ls *.h)
@@ -90,7 +90,7 @@ LOAD	:=$(LOADER) -i 5 -U flash:w:$(FIRMWARE).hex
 DUMP	:=$(LOADER) -i 5 -U flash:r:$(FIRMWARE).hex:i
 VERIFY	:=$(LOADER) -i 5 -U flash:v:$(FIRMWARE).hex
 ERASE	:=$(LOADER) -i 5 -e
-RFUSE	:=$(LOADER) -U lfuse:r:low.txt:b -U hfuse:r:high.txt:b
+RFUSE	:=$(LOADER) -U lfuse:r:low.txt:h -U hfuse:r:high.txt:h
 WFUSE	:=$(LOADER) -U lfuse:w:$(LFUSE):m -U hfuse:w:$(HFUSE):m
 
 load:
@@ -123,10 +123,7 @@ wfuse:
 clean :
 	@printf "Cleaning source tree..."
 	@rm -f *.map *.bin *~ *.out *.gch *.o \
-		low.txt high.txt $(FIRMWARE) $(FIRMWARE).asm
+		low.txt high.txt $(FIRMWARE) $(FIRMWARE).asm *.hex
 	@echo "done."
-	@rm -f *.hex
 
-archive: mrproper
-	@tar cvzf ../../$(FIRMWARE).tgz ../../$(FIRMWARE)
 #EOF
