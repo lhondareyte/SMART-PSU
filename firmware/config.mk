@@ -27,11 +27,11 @@
 #
 
 FIRMWARE	:=power-button
+#MCU		:=attiny13
 #MCU		:=attiny13a
 MCU		:=atmega328p
-HZ		:=16000000
 #
-# Valeurs de hfuse et lfuse
 LFUSE		:=0xff
 HFUSE		:=0xdf
+EFUSE		:=0x05
 

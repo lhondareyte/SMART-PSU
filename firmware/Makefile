@@ -90,8 +90,11 @@ LOAD	:=$(LOADER) -i 5 -U flash:w:$(FIRMWARE).hex
 DUMP	:=$(LOADER) -i 5 -U flash:r:$(FIRMWARE).hex:i
 VERIFY	:=$(LOADER) -i 5 -U flash:v:$(FIRMWARE).hex
 ERASE	:=$(LOADER) -i 5 -e
-RFUSE	:=$(LOADER) -U lfuse:r:low.txt:h -U hfuse:r:high.txt:h
-WFUSE	:=$(LOADER) -U lfuse:w:$(LFUSE):m -U hfuse:w:$(HFUSE):m
+RFUSE	:=$(LOADER) -U lfuse:r:low.txt:h -U hfuse:r:high.txt:h -U efuse:r:extd.txt:h
+WFUSE	:=$(LOADER) -U lfuse:w:$(LFUSE):m -U hfuse:w:$(HFUSE):m -U efuse:w:$(EFUSE):m
+
+dload:
+	$(LOAD) 
 
 load:
 	@printf "Loading firmware..."

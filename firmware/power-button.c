@@ -1,6 +1,5 @@
 /*
- * Copyright (c)2017, Luc Hondareyte
- * 
+ * Copyright (c)2018, Luc Hondareyte
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without 
@@ -28,12 +27,13 @@
 /*
  * POWER BUTTON - AVR Version
  *
- * Copyright (c)2017, Luc Hondareyte
+ * Copyright (c)2018, Luc Hondareyte
  * All rights reserved.
  *
  * $Id$
  */
 
+#include "power-button.h"
 #include <avr/io.h>
 #include <stdlib.h>
 #include <avr/interrupt.h>
@@ -41,13 +41,13 @@
 #include <util/delay.h>
 #include <avr/sleep.h>
 #include <avr/power.h>
-#include "power-button.h"
 
 // Time to wait operating systeme
-#define KERNEL_LOAD_TIMEOUT 20
+#define STARTUP_TIMEOUT 20
+#define SHUTDOWN_TIMEOUT 20
 
 inline void SetupHardware(void ) {
-	//
+
 	// Set ports direction
 	D_PORT=0x00;
 	setBit(D_PORT,LED);
@@ -61,7 +61,7 @@ inline void SetupHardware(void ) {
 	clearBit(EICRA,ISC01);
 	setBit(EIMSK,INT0);
 #else
-
+#warning "No timer defined"
 #endif
 	sei();
 }
@@ -72,7 +72,7 @@ uint8_t os_is_active=0;
 uint8_t volatile seconds=0;
 uint16_t volatile _ms=0x0000;
 
-#if defined (__AVR_ATtiny13a__)
+#if defined (__AVR_ATtiny13A__) || defined (__AVR_ATtiny13__)
 ISR (TIM0_OVF_vect) {
 #else
 ISR (TIMER0_OVF_vect) {
@@ -88,10 +88,6 @@ ISR (INT0_vect) {
 	// Just Wake-up CPU
 }
 
-int startup(void) {
-	return 0;
-}
-
 inline void heartbeat(void) {
 }
 
@@ -101,12 +97,18 @@ inline void startTimer(void) {
 inline void stopTimer(void) {
 }
 
+inline void waitForStartup(int t) {
+}
+
+inline void waitForShutdown(int t) {
+}
+
 uint8_t powerOn(void){
 	uint8_t rc=0;
 	//
 	// Wait for key pressed
 	//
-	loop_until_bit_is_clear(PORT,BUTTON);
+	loop_until_bit_is_clear(IPORT,BUTTON);
 	switchOn();
 	_delay_ms(200);
 	startTimer();
@@ -126,8 +128,7 @@ uint8_t powerOn(void){
 }
 
 int main(void){
-	//
-	//
+
 	SetupHardware();
 	//
 	// Power-down configuration
@@ -140,22 +141,41 @@ int main(void){
 		sleep_mode();
 		sleep_disable();
 		/* 
-		   Waiting for INT0
-		   zzzzzzzzzzzzz.....
+		   ...zzzzzzzzzzzz
+		   Waiting for INT0.
 		 */
 
+		 /*
+		  * disable INT0
+		  */
+#if defined (__AVR_ATmega328P__)
+		clearBit(EIMSK,INT0);
+#endif
 		if (board_is_on) {
+			if (os_is_active) {
+				waitForShutdown(SHUTDOWN_TIMEOUT);
+			}
 			switchOff();
 			board_is_on=NO;
 		}
 		else {
 			switchOn();
 			board_is_on=YES;
+			//waitForStartup(STARTUP_TIMEOUT);
+			//switchOff();
+			//board_is_on=NO;
 		}
+		/*
+		 *  Debounce
+		 */
+		loop_until_bit_is_set(IPORT,BUTTON);
 		_delay_ms(100);
-		sleep_enable();
-		sleep_mode();
-		sleep_disable();
+		/*
+		 * Re-enable INT0
+		 */
+#if defined (__AVR_ATmega328P__)
+		setBit(EIMSK,INT0);
+#endif
 	}
 }
 

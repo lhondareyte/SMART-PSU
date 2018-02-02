@@ -1,6 +1,5 @@
 /*
- * Copyright (c)2017, Luc Hondareyte
- * 
+ * Copyright (c)2018, Luc Hondareyte
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without 
@@ -34,7 +33,13 @@
 #define  setBit(octet,bit)     ( octet |= (1<<bit))
 #define  clearBit(octet,bit)   ( octet &= ~(1<<bit))
 
-#if defined (__AVR_ATtiny13A__) 
+#if defined (__AVR_ATtiny13A__)  || defined (__AVR_ATtiny13__)
+
+#undef F_CPU
+#define F_CPU	40000000UL
+
+#define switchOn()	clearBit(PORT,PWR)
+#define switchOff()	setBit(PORT,PWR)
 
 #define D_PORT	DDRB
 #define PORT	PORTB
@@ -46,8 +51,15 @@
 
 #elif defined (__AVR_ATmega328P__)
 
+#undef F_CPU
+#define F_CPU	16000000UL
+
+#define switchOn()	setBit(PORT,PWR)
+#define switchOff()	clearBit(PORT,PWR)
+
 #define D_PORT	DDRD
 #define PORT	PORTD
+#define IPORT	PIND
 #define BUTTON	2
 #define PWR	3
 #define PWRDWN	4
@@ -55,22 +67,12 @@
 #define HB	6
 
 #else
-# error "Device not supported"
+#error "Device not supported"
 #endif
 
 #define NO	0
 #define YES	1
 #define PWR_OFF	0
 #define PWR_ON	1
-
-
-#if defined (__AVR_ATtiny13a__)
-#define switchOn()	clearBit(PORT,PWR)
-#define switchOff()	setBit(PORT,PWR)
-#else
-#define switchOn()	setBit(PORT,PWR)
-#define switchOff()	clearBit(PORT,PWR)
-
-#endif
 
 #endif /* __POWER_BUTTON_H__ */
