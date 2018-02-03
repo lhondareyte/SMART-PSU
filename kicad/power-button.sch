@@ -34,11 +34,11 @@ EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 1
-Title "AUDIOBOX"
-Date "2015-12-14"
+Title "POWERSWITCH"
+Date "2017-12-17"
 Rev "$Id$"
-Comp "LOFITECH"
-Comment1 ""
+Comp "Luc Hondareyte"
+Comment1 "PowerSwitch"
 Comment2 ""
 Comment3 ""
 Comment4 ""
