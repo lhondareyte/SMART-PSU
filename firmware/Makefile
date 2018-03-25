@@ -33,6 +33,7 @@ CC		:=$(CCPATH)/avr-gcc
 OBJCOPY		:=$(CCPATH)/avr-objcopy
 CFLAGS		+=-Os 
 CFLAGS		+=-g -mmcu=$(MCU) -Wall -Wstrict-prototypes
+CFLAGS		+=-D __BREADBOARD__
 
 HEADERS         += $(shell ls *.h)
 SOURCES         += $(shell ls *.c)
@@ -93,12 +94,9 @@ ERASE	:=$(LOADER) -i 5 -e
 RFUSE	:=$(LOADER) -U lfuse:r:low.txt:h -U hfuse:r:high.txt:h -U efuse:r:extd.txt:h
 WFUSE	:=$(LOADER) -U lfuse:w:$(LFUSE):m -U hfuse:w:$(HFUSE):m -U efuse:w:$(EFUSE):m
 
-dload:
-	$(LOAD) 
-
 load:
 	@printf "Loading firmware..."
-	@$(LOAD) > /dev/null 2>&1
+	@minipro -S -w smart-psu.bin -c code -p ATTINY13 > /dev/null 2>&1
 	@echo "done."
 dump:
 	@printf "Reading $(MCU) device..."
@@ -119,8 +117,12 @@ rfuse:
 	@echo "done."
 wfuse:
 	@printf "Writing fuse..."
-	@$(WFUSE) > /dev/null 2>&1
+	@minipro -w fuses.txt -c config -p ATTINY13 > /dev/null 2>&1
 	@echo "done."
+dload:
+	$(LOAD) 
+dfuse:
+	$(WFUSE)
 #
 # Nettoyage, Archivage, etc.
 clean :
