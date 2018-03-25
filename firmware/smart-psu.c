@@ -33,7 +33,7 @@
  * $Id$
  */
 
-#include "power-button.h"
+#include "smart-psu.h"
 #include <avr/io.h>
 #include <stdlib.h>
 #include <avr/interrupt.h>

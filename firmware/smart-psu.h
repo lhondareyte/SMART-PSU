@@ -36,13 +36,14 @@
 #if defined (__AVR_ATtiny13A__)  || defined (__AVR_ATtiny13__)
 
 #undef F_CPU
-#define F_CPU	40000000UL
+#define F_CPU	48000000UL
 
 #define switchOn()	clearBit(PORT,PWR)
 #define switchOff()	setBit(PORT,PWR)
 
 #define D_PORT	DDRB
 #define PORT	PORTB
+#define IPORT	PINB
 #define BUTTON	0
 #define PWRDWN	1
 #define LED	2
