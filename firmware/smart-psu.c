@@ -63,14 +63,11 @@ inline void SetupHardware(void ) {
 	// Pullup resistor on button pin
 	setBit(PORT,BUTTON);
 
+	// Configure INT0
+	clearBit(INTRGST,ISC00);
+	clearBit(INTRGST,ISC01);
+
 	// Active INT0
-#if defined (__AVR_ATmega328P__)
-	clearBit(EICRA,ISC00);
-	clearBit(EICRA,ISC01);
-#elif defined (__AVR_ATtiny13A__) || defined (__AVR_ATtiny13__)
-	clearBit(MCUCR,ISC00);
-	clearBit(MCUCR,ISC01);
-#endif
 	setINT0();
 	sei();
 }
@@ -86,15 +83,10 @@ ISR (TIM0_OVF_vect) {
 #else
 ISR (TIMER0_OVF_vect) {
 #endif
-	_ms++;
-	if ( _ms == 1000 ) {
-		_ms=0;
-		seconds++;
-	}
 }
 
 ISR (INT0_vect) {
-	// Just Wake-up CPU
+	// We just Wake-up CPU
 }
 
 inline void startTimer(void) {
@@ -115,7 +107,7 @@ uint8_t powerOn(void){
 	// Wait for key pressed
 	//
 	loop_until_bit_is_clear(IPORT,BUTTON);
-	switchOn();
+	switchOn(PWR);
 	_delay_ms(200);
 	startTimer();
 	//
@@ -123,7 +115,7 @@ uint8_t powerOn(void){
 	//
 	while ( seconds <= 3 ) {
 		if ( bit_is_set (PORT,BUTTON) ) {
-			switchOff();
+			switchOff(PWR);
 			_delay_ms(200);
 			rc=1;
 			break;
@@ -139,28 +131,27 @@ int main(void){
 	//
 	// Power-down configuration
 	set_sleep_mode(SLEEP_MODE_PWR_DOWN);
-	switchOff();
+	switchOff(PWR);
 	board_is_on=NO;
 	os_is_active=NO;
 	while (1) {
 		sleep_enable();
 		sleep_mode();
-		sleep_disable();
 		/* 
 		   ...zzzzzzzzzzzz
 		   Waiting for INT0.
 		 */
-
+		sleep_disable();
 		unsetINT0();
 		if (board_is_on) {
 			if (os_is_active) {
 				waitForShutdown(SHUTDOWN_TIMEOUT);
 			}
-			switchOff();
+			switchOff(PWR);
 			board_is_on=NO;
 		}
 		else {
-			switchOn();
+			switchOn(PWR);
 			board_is_on=YES;
 			//waitForStartup(STARTUP_TIMEOUT);
 			//switchOff();
@@ -170,7 +161,7 @@ int main(void){
 		 *  Debounce
 		 */
 		loop_until_bit_is_set(IPORT,BUTTON);
-		_delay_ms(100);
+		_delay_ms(200);
 
 		setINT0();
 	}

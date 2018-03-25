@@ -36,20 +36,20 @@
 #if defined (__AVR_ATtiny13A__)  || defined (__AVR_ATtiny13__)
 
 #undef F_CPU
-#define F_CPU	48000000UL
+#define F_CPU	4800000UL
 /* Interupt mask register */
 #define INTMSKR	GIMSK
-#define switchOn()	clearBit(PORT,PWR)
-#define switchOff()	setBit(PORT,PWR)
+/* Interrupt register */
+#define INTRGST	MCUCR
 
 #define D_PORT	DDRB
 #define PORT	PORTB
 #define IPORT	PINB
-#define BUTTON	0
-#define PWRDWN	1
+#define PWR	0
+#define BUTTON	1
 #define LED	2
-#define HB	3
-#define PWR	4
+#define FAULT	3
+#define DELAY	4
 
 #elif defined (__AVR_ATmega328P__)
 
@@ -57,10 +57,8 @@
 #define F_CPU	16000000UL
 /* Interupt mask register */
 #define INTMSKR	EIMSK
-#define switchOn()	clearBit(PORT,PWR)
-
-#define switchOn()	setBit(PORT,PWR)
-#define switchOff()	clearBit(PORT,PWR)
+/* Interrupt register */
+#define INTRGST	EICRA
 
 #define D_PORT	DDRD
 #define PORT	PORTD
@@ -72,7 +70,15 @@
 #define HB	6
 
 #else
-#error "Device not supported"
+ #error "Device not supported"
+#endif
+
+#if defined (__BREADBOARD__)
+#define switchOn(n)	setBit(PORT,n)
+#define switchOff(n)	clearBit(PORT,n)
+#else
+#define switchOn(n)	clearBit(PORT,n)
+#define switchOff(n)	setBit(PORT,n)
 #endif
 
 #define NO	0
