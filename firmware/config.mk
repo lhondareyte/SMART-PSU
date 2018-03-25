@@ -26,12 +26,14 @@
 # $Id: Makefile,v 1.4 2011/04/25 16:21:03 luc Exp luc $
 #
 
-FIRMWARE	:=power-button
-#MCU		:=attiny13
+FIRMWARE	:=smart-psu
+MCU		:=attiny13
+LFUSE		:=0x71
+HFUSE		:=0xff
 #MCU		:=attiny13a
-MCU		:=atmega328p
-#
-LFUSE		:=0xff
-HFUSE		:=0xdf
-EFUSE		:=0x05
+
+#MCU		:=atmega328p
+#LFUSE		:=0xff
+#HFUSE		:=0xdf
+#EFUSE		:=0x05
 
