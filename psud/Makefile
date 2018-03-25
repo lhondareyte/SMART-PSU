@@ -1,7 +1,7 @@
 #
 #  $Id$
 # 
-PRG	= buttond
+PRG	= psud
 CFLAGS	= -O2 -Wall 
 
 LDFLAGS	= -lgpio

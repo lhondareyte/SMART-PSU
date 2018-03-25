@@ -60,7 +60,7 @@ LibName29=valves
 version=1
 [schematic_editor]
 version=1
-PageLayoutDescrFile=power-button.kicad_wks
+PageLayoutDescrFile=smart-psu.kicad_wks
 PlotDirectoryName=
 SubpartIdSeparator=0
 SubpartFirstId=65

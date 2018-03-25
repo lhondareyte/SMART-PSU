@@ -28,13 +28,13 @@ LIBS:opto
 LIBS:atmel
 LIBS:contrib
 LIBS:valves
-LIBS:power-button-cache
+LIBS:smart-psu-cache
 EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 1
-Title "POWERSWITCH"
+Title "SMART-PSU"
 Date "2017-12-17"
 Rev "$Id$"
 Comp "Luc Hondareyte"

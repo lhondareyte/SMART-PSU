@@ -24,50 +24,24 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+#ifndef __PSUD_H__
+#define __PSUD_H__
 
-#include "buttond.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-int get_config(char *filename, struct buttond_config *s)
+#define CONFILE "/etc/psu.conf"
+#define MAXBUF 256
+
+struct psu_config
 {
-	FILE *file = fopen (filename, "r");
+	char pin[2];
+	char cmd[MAXBUF];
+	char mode[MAXBUF];
+};
 
-	if (file != NULL)
-	{
-		char line[MAXBUF];
-		while(fgets(line, sizeof(line), file) != NULL)
-		{
-			char *token; 	// Keywords
-			char *cfline; 	// Valid configuration line
-			// Skipping Commented line
-			if ( line[0] == '#' ) {
-				continue;
-			}
-			// Skipping invalid line
-			if ( strchr((char *)line, '=') == 0 ) {
-				continue;
-			}
-			else {
-				cfline=(char*)line;
-				token = strsep(&cfline, "=" );
-				if (strcmp(token,"BUTTOND_PIN") == 0) {
-					token = strsep(&cfline, "# \r\n" );
-					memcpy((char *)s->pin,token, strlen(token));
-				}
-				if (strcmp(token,"BUTTOND_CMD") == 0) {
-					token = strsep(&cfline, "#\r\n" );
-					memcpy(s->cmd,token, strlen(token));
-				}
-				if (strcmp(token,"BUTTOND_MODE") == 0) {
-					token = strsep(&cfline, "#\r\n " );
-					memcpy(s->mode,token, strlen(token));
-				}
-			}
-		}
-		fclose(file);
-	} else {
-		perror(CONFILE);
-		return -1;
-	}
-	return 0;
-}
+int get_config(char *, struct psu_config *);
+
+#endif // __PSUD_H_
 

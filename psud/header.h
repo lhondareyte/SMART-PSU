@@ -24,24 +24,3 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-#ifndef __BUTTOND_H__
-#define __BUTTOND_H__
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#define CONFILE "/etc/buttond.conf"
-#define MAXBUF 256
-
-struct buttond_config
-{
-	char pin[2];
-	char cmd[MAXBUF];
-	char mode[MAXBUF];
-};
-
-int get_config(char *, struct buttond_config *);
-
-#endif // __BUTTOND_H__
-
