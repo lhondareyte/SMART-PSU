@@ -8,12 +8,23 @@
 name="psud"
 desc="SMART PSU Daemon"                 
 start_cmd="psud_start" 
-stop_cmd=":"
+stop_cmd="psud_stop"
+reload_cmd="psud_reload"
 rcvar="psud_enable"
 
 psud_start () 
 {
         /usr/local/bin/psud
+}
+
+psud_stop () 
+{
+	kill $(pgrep $name)
+}
+
+psud_reload () 
+{
+	kill -HUP $(pgrep $name)
 }
 
 load_rc_config $name
