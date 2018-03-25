@@ -46,6 +46,14 @@
 #define STARTUP_TIMEOUT 20
 #define SHUTDOWN_TIMEOUT 20
 
+inline void setINT0(void) {
+	setBit(INTMSKR,INT0);
+}
+
+inline void unsetINT0(void) {
+	clearBit(INTMSKR,INT0);
+}
+
 inline void SetupHardware(void ) {
 
 	// Set ports direction
@@ -59,12 +67,11 @@ inline void SetupHardware(void ) {
 #if defined (__AVR_ATmega328P__)
 	clearBit(EICRA,ISC00);
 	clearBit(EICRA,ISC01);
-	setBit(EIMSK,INT0);
 #elif defined (__AVR_ATtiny13A__) || defined (__AVR_ATtiny13__)
 	clearBit(MCUCR,ISC00);
 	clearBit(MCUCR,ISC01);
-	setBit(GIMSK,INT0);
 #endif
+	setINT0();
 	sei();
 }
 
@@ -143,14 +150,8 @@ int main(void){
 		   ...zzzzzzzzzzzz
 		   Waiting for INT0.
 		 */
-		/*
-		 * disable INT0
-		 */
-#if defined (__AVR_ATmega328P__)
-		clearBit(EIMSK,INT0);
-#elif defined (__AVR_ATtiny13A__) || defined (__AVR_ATtiny13__)
-		clearBit(GIMSK,INT0);
-#endif
+
+		unsetINT0();
 		if (board_is_on) {
 			if (os_is_active) {
 				waitForShutdown(SHUTDOWN_TIMEOUT);
@@ -170,14 +171,8 @@ int main(void){
 		 */
 		loop_until_bit_is_set(IPORT,BUTTON);
 		_delay_ms(100);
-		/*
-		 * Re-enable INT0
-		 */
-#if defined (__AVR_ATmega328P__)
-		setBit(EIMSK,INT0);
-#elif defined (__AVR_ATtiny13A__) || defined (__AVR_ATtiny13__)
-		setBit(GIMSK,INT0);
-#endif
+
+		setINT0();
 	}
 }
 

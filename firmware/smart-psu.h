@@ -37,7 +37,8 @@
 
 #undef F_CPU
 #define F_CPU	48000000UL
-
+/* Interupt mask register */
+#define INTMSKR	GIMSK
 #define switchOn()	clearBit(PORT,PWR)
 #define switchOff()	setBit(PORT,PWR)
 
@@ -54,6 +55,9 @@
 
 #undef F_CPU
 #define F_CPU	16000000UL
+/* Interupt mask register */
+#define INTMSKR	EIMSK
+#define switchOn()	clearBit(PORT,PWR)
 
 #define switchOn()	setBit(PORT,PWR)
 #define switchOff()	clearBit(PORT,PWR)
