@@ -60,8 +60,10 @@ inline void SetupHardware(void ) {
 	clearBit(EICRA,ISC00);
 	clearBit(EICRA,ISC01);
 	setBit(EIMSK,INT0);
-#else
-#warning "No timer defined"
+#elif defined (__AVR_ATtiny13A__) || defined (__AVR_ATtiny13__)
+	clearBit(MCUCR,ISC00);
+	clearBit(MCUCR,ISC01);
+	setBit(GIMSK,INT0);
 #endif
 	sei();
 }
@@ -86,9 +88,6 @@ ISR (TIMER0_OVF_vect) {
 
 ISR (INT0_vect) {
 	// Just Wake-up CPU
-}
-
-inline void heartbeat(void) {
 }
 
 inline void startTimer(void) {
@@ -144,12 +143,13 @@ int main(void){
 		   ...zzzzzzzzzzzz
 		   Waiting for INT0.
 		 */
-
-		 /*
-		  * disable INT0
-		  */
+		/*
+		 * disable INT0
+		 */
 #if defined (__AVR_ATmega328P__)
 		clearBit(EIMSK,INT0);
+#elif defined (__AVR_ATtiny13A__) || defined (__AVR_ATtiny13__)
+		clearBit(GIMSK,INT0);
 #endif
 		if (board_is_on) {
 			if (os_is_active) {
@@ -175,6 +175,8 @@ int main(void){
 		 */
 #if defined (__AVR_ATmega328P__)
 		setBit(EIMSK,INT0);
+#elif defined (__AVR_ATtiny13A__) || defined (__AVR_ATtiny13__)
+		setBit(GIMSK,INT0);
 #endif
 	}
 }
