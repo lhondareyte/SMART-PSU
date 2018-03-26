@@ -27,15 +27,12 @@
 
 #include "psud.h"
 
-int get_config(char *filename, struct psu_config *s)
-{
+int get_config(char *filename, struct psu_config *s) {
 	FILE *file = fopen (filename, "r");
 
-	if (file != NULL)
-	{
+	if (file != NULL) {
 		char line[MAXBUF];
-		while(fgets(line, sizeof(line), file) != NULL)
-		{
+		while(fgets(line, sizeof(line), file) != NULL) {
 			char *token; 	// Keywords
 			char *cfline; 	// Valid configuration line
 			// Skipping Commented line

@@ -6,8 +6,7 @@
 
 #include "psud.h"
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
 	struct psu_config config;
 	if (( get_config(CONFILE, &config)) == -1 ) {
 		return 1;

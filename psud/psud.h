@@ -34,8 +34,7 @@
 #define CONFILE "/etc/psu.conf"
 #define MAXBUF 256
 
-struct psu_config
-{
+struct psu_config {
 	char pin[2];
 	char cmd[MAXBUF];
 	char mode[MAXBUF];
