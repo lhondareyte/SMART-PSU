@@ -41,7 +41,13 @@ int main(int argc, char **argv) {
 #if defined(__DEBUG__)
 			fprintf(stderr, "execl: %s\n", buttond.cmd);
 #endif
-			execl ( "/sbin/shutdown", "shutdown", "-p", "now", NULL);
+			pid_t pid=0;
+			if ((pid = fork()) == -1)
+				perror("fork error");
+			else if (pid == 0) {
+				execl("/bin/sh", "sh", "-c", (char*)config.cmd, NULL);
+				fprintf(stderr, "execl error\n");
+			}
 		}
 		else {
 			lastbuttonstate = buttonstate;
