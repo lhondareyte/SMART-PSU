@@ -27,6 +27,17 @@
 
 #include "psud.h"
 
+void del_doubleCommas(char *s) {
+	char *i, *j;
+	if ( s[0] == '"' ) {
+	for (i=j=s; *i; i++) {
+		if (*i != '"')
+			*(j++) = *i;
+	}
+	*j = '\0';
+}
+}
+
 int get_config(char *filename, struct psu_config *s) {
 	FILE *file = fopen (filename, "r");
 
@@ -46,11 +57,11 @@ int get_config(char *filename, struct psu_config *s) {
 			else {
 				cfline=(char*)line;
 				token = strsep(&cfline, "=" );
-				if (strcmp(token,"PSU_PIN") == 0) {
+				if (strcmp(token,"PSUD_PIN") == 0) {
 					token = strsep(&cfline, "# \r\n" );
 					memcpy((char *)s->pin,token, strlen(token));
 				}
-				if (strcmp(token,"POWEROFF_CMD") == 0) {
+				if (strcmp(token,"PSUD_CMD") == 0) {
 					token = strsep(&cfline, "#\r\n" );
 					memcpy(s->cmd,token, strlen(token));
 				}
@@ -65,6 +76,9 @@ int get_config(char *filename, struct psu_config *s) {
 		perror(CONFILE);
 		return -1;
 	}
+	del_doubleCommas(s->pin);
+	del_doubleCommas(s->cmd);
+	del_doubleCommas(s->mode);
 	return 0;
 }
 
