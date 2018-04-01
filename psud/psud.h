@@ -32,6 +32,7 @@
 #include <string.h>
 
 #define CONFILE "/etc/psu.conf"
+#define LOCK 	"/var/run/psud.pid"
 #define MAXBUF 256
 
 struct psu_config {

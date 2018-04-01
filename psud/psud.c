@@ -29,15 +29,58 @@
 #include <unistd.h>
 #include <libgpio.h>
 #include <time.h>
+#include <signal.h>
+#include <sys/file.h>
 
 #include "psud.h"
 
+FILE *lockfile;
+
+void psud_quit(int r) {
+	fclose(lockfile);
+	remove (LOCK);
+	exit(0);
+}
+
 int main(int argc, char **argv) {
+
+	/*
+	 * Open exclusive lock file to avoid multiple instances of daemon
+	 */
+	if (( lockfile = fopen(LOCK, "w")) == NULL) {
+		perror("/var/run/lock.pid");
+		return 1;
+	}
+	int fd=fileno(lockfile);
+	if (flock (fd, LOCK_EX | LOCK_NB) == -1) {
+		perror (LOCK);
+		return 1;
+	}
+
+	/*
+	 * Getting valid configuration
+	 */
 	struct psu_config config;
 	if (( get_config(CONFILE, &config)) == -1 ) {
 		return 1;
 	}
 
+	/*
+	 * Signals handling
+	 */
+	signal(SIGINT, psud_quit);
+	signal(SIGTERM, psud_quit);
+
+
+	/*
+	 * Writing pid to lockfile
+	 */
+	setvbuf (lockfile, (char*)NULL, _IONBF, 0);
+	fprintf(lockfile, "%d", getpid());
+
+	/*
+	 * Ready to run. 
+	 */
 	int psu_pin = atoi(config.pin);
 	int buttonstate=0;
 	int lastbuttonstate=0;
