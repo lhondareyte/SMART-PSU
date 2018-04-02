@@ -1,42 +1,15 @@
 #!/bin/sh
 #
 # PROVIDE: psud
-# BEFORE: sysctl
+# BEFORE: DAEMON
 
 . /etc/rc.subr
 
 name="psud"
-desc="SMART PSU Daemon"                 
-start_cmd="psud_start" 
-stop_cmd="psud_stop"
-restart_cmd="psud_reload"
+desc="Smart PSU Daemon"                 
 rcvar="psud_enable"
-
-_pid=$(pgrep $name)
-
-psud_start () {
-        if [ -z "$_pid" ] ; then
-                /usr/local/bin/psud &
-        else
-                echo "$name is already started ($_pid)"
-        fi
-}
-
-psud_stop () {
-        if [ -z "$_pid" ] ; then
-                echo $name is already stopped
-        else
-                kill $_pid
-        fi
-}
-
-psud_reload () {
-        if [ -z "$_pid" ] ; then
-                /usr/local/bin/psud &
-        else
-                kill -HUP $_pid
-        fi
-}
+command="/usr/local/bin/${name}"
+pidfile="/var/run/${name}.pid"
 
 load_rc_config $name
 run_rc_command "$1"

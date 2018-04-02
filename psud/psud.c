@@ -24,6 +24,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -48,7 +49,7 @@ int main(int argc, char **argv) {
 	 * Open exclusive lock file to avoid multiple instances of daemon
 	 */
 	if (( lockfile = fopen(LOCK, "w")) == NULL) {
-		perror("/var/run/lock.pid");
+		perror(LOCK);
 		return 1;
 	}
 	int fd=fileno(lockfile);
@@ -71,6 +72,17 @@ int main(int argc, char **argv) {
 	signal(SIGINT, psud_quit);
 	signal(SIGTERM, psud_quit);
 
+	/*
+	 * Daemonize
+	 */
+	pid_t process_id=0;
+	if ((process_id = fork()) < 0) {
+		perror("fork");
+		exit(1);
+	}
+	// Kill parent process
+	if (process_id > 0 )
+		exit(0);
 
 	/*
 	 * Writing pid to lockfile
