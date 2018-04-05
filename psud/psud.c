@@ -52,8 +52,7 @@ int main(int argc, char **argv) {
 		perror(LOCK);
 		return 1;
 	}
-	int fd=fileno(lockfile);
-	if (flock (fd, LOCK_EX | LOCK_NB) == -1) {
+	if (flock (fileno(lockfile), LOCK_EX | LOCK_NB) == -1) {
 		perror (LOCK);
 		return 1;
 	}
@@ -62,6 +61,7 @@ int main(int argc, char **argv) {
 	 * Getting valid configuration
 	 */
 	struct psu_config config;
+	memset(&config, 0, sizeof(config));
 	if (( get_config(CONFILE, &config)) == -1 ) {
 		return 1;
 	}
