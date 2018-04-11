@@ -12,6 +12,8 @@ LDFLAGS	= -lgpio
 MK_MAN	= no
 MK_DEBUG_FILES = no
 
+DESTDIR = /usr/local/bin
+
 clean:
 	@rm -f  *.o $(PROG) *debug *full .depend*
 

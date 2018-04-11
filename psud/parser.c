@@ -65,7 +65,7 @@ int get_config(char *filename, struct psu_config *s) {
 					token = strsep(&cfline, "#\r\n" );
 					memcpy(s->cmd,token, strlen(token));
 				}
-				if (strcmp(token,"PSUD_MODE") == 0) {
+				if (strcmp(token,"PSUD_OPT") == 0) {
 					token = strsep(&cfline, "#\r\n " );
 					memcpy(s->mode,token, strlen(token));
 				}

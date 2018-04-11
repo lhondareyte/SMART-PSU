@@ -30,8 +30,12 @@
 #include <unistd.h>
 #include <libgpio.h>
 #include <time.h>
+#include <sys/time.h>
+#include <sys/resource.h>
 #include <signal.h>
 #include <sys/file.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 #include "psud.h"
 
@@ -44,6 +48,8 @@ void psud_quit(int r) {
 }
 
 int main(int argc, char **argv) {
+	
+	int status=0;
 
 	/*
 	 * Open exclusive lock file to avoid multiple instances of daemon
@@ -88,7 +94,9 @@ int main(int argc, char **argv) {
 	 * Writing pid to lockfile
 	 */
 	setvbuf (lockfile, (char*)NULL, _IONBF, 0);
-	fprintf(lockfile, "%d", getpid());
+	pid_t pid=getpid();
+	fprintf(lockfile, "%d", pid);
+	setpriority(PRIO_PROCESS, pid, 20);
 
 	/*
 	 * Ready to run. 
@@ -125,12 +133,20 @@ int main(int argc, char **argv) {
 			else if (pid == 0) {
 				execl("/bin/sh", "sh", "-c", (char*)config.cmd, NULL);
 				fprintf(stderr, "execl error\n");
+
+			} else {
+				if (strcmp(config.opt, "waitNshoot") == 0 ) {
+					waitpid(pid, NULL, WEXITED);
+					gpio_pin_output(handle, psu_pin);
+					gpio_pin_low(handle, psu_pin);
+					return 0;
+				} else wait(&status);
 			}
 		}
 		else {
 			lastbuttonstate = buttonstate;
 		}
-		usleep(100000);
+		usleep(250000);
 	}	
 }
 
