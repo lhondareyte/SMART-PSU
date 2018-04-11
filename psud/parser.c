@@ -67,7 +67,7 @@ int get_config(char *filename, struct psu_config *s) {
 				}
 				if (strcmp(token,"PSUD_OPT") == 0) {
 					token = strsep(&cfline, "#\r\n " );
-					memcpy(s->mode,token, strlen(token));
+					memcpy(s->opt,token, strlen(token));
 				}
 			}
 		}
@@ -78,7 +78,7 @@ int get_config(char *filename, struct psu_config *s) {
 	}
 	del_doubleCommas(s->pin);
 	del_doubleCommas(s->cmd);
-	del_doubleCommas(s->mode);
+	del_doubleCommas(s->opt);
 	return 0;
 }
 

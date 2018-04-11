@@ -36,14 +36,17 @@
 #include <sys/file.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <syslog.h>
 
 #include "psud.h"
 
 FILE *lockfile;
 
 void psud_quit(int r) {
+	syslog(LOG_NOTICE,"Received signal(%d), quitting.\n", r);
 	fclose(lockfile);
 	remove (LOCK);
+	closelog();
 	exit(0);
 }
 
@@ -71,6 +74,13 @@ int main(int argc, char **argv) {
 	if (( get_config(CONFILE, &config)) == -1 ) {
 		return 1;
 	}
+
+	/*
+	 * Logging
+	 */
+
+	openlog("psud", LOG_PID|LOG_NDELAY, LOG_DAEMON),
+	syslog(LOG_NOTICE, "Starting daemon.\n");
 
 	/*
 	 * Signals handling
@@ -131,11 +141,12 @@ int main(int argc, char **argv) {
 			if ((pid = fork()) == -1)
 				perror("fork error");
 			else if (pid == 0) {
+				syslog(LOG_NOTICE, "Gpio signal toggle: executing psud_cmd (%s)\n", (char*)config.cmd);
 				execl("/bin/sh", "sh", "-c", (char*)config.cmd, NULL);
 				fprintf(stderr, "execl error\n");
 
 			} else {
-				if (strcmp(config.opt, "waitNshoot") == 0 ) {
+				if (strcmp(config.opt, "WaitAndShoot") == 0 ) {
 					waitpid(pid, NULL, WEXITED);
 					gpio_pin_output(handle, psu_pin);
 					gpio_pin_low(handle, psu_pin);
