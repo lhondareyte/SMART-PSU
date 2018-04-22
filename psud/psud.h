@@ -31,14 +31,17 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define CONFILE "/etc/psu.conf"
+#define UP      1
+#define DOWN    0
+
+#define CONFILE "/etc/psud.conf"
 #define LOCK 	"/var/run/psud.pid"
 #define MAXBUF 256
 
 struct psu_config {
-	char pin[2];
-	char cmd[MAXBUF];
-	char opt[MAXBUF];
+    char pin[2];
+    char cmd[MAXBUF];
+    char opt[MAXBUF];
 };
 
 int get_config(char *, struct psu_config *);
