@@ -165,5 +165,10 @@ int main(void){
 
 		setINT0();
 	}
+fault:
+	while(1) {
+		_delay_ms(200);
+		//toggle(FAULT);
+	}
 }
 
