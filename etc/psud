@@ -1,6 +1,7 @@
 #!/bin/sh
 #
 # PROVIDE: psud
+# REQUIRE: syslogd
 # BEFORE: DAEMON
 
 . /etc/rc.subr
