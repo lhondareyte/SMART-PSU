@@ -28,57 +28,57 @@
 #include "psud.h"
 
 void del_doubleCommas(char *s) {
-    char *i, *j;
-    if ( s[0] == '"' ) {
-        for (i=j=s; *i; i++) {
-            if (*i != '"')
-                *(j++) = *i;
-        }
-        *j = '\0';
-    }
+	char *i, *j;
+	if ( s[0] == '"' ) {
+		for (i=j=s; *i; i++) {
+			if (*i != '"')
+				*(j++) = *i;
+		}
+		*j = '\0';
+	}
 }
 
 int get_config(char *filename, struct psu_config *s) {
-    FILE *file = fopen (filename, "r");
+	FILE *file = fopen (filename, "r");
 
-    if (file != NULL) {
-        char line[MAXBUF];
-        while(fgets(line, sizeof(line), file) != NULL) {
-            char *token; 	// Keywords
-            char *cfline; 	// Valid configuration line
-            // Skipping Commented line
-            if ( line[0] == '#' ) {
-                continue;
-            }
-            // Skipping invalid line
-            if ( strchr((char *)line, '=') == 0 ) {
-                continue;
-            }
-            else {
-                cfline=(char*)line;
-                token = strsep(&cfline, "=" );
-                if (strcmp(token,"PSUD_PIN") == 0) {
-                    token = strsep(&cfline, "# \r\n" );
-                    memcpy((char *)s->pin,token, strlen(token));
-                }
-                if (strcmp(token,"PSUD_CMD") == 0) {
-                    token = strsep(&cfline, "#\r\n" );
-                    memcpy(s->cmd,token, strlen(token));
-                }
-                if (strcmp(token,"PSUD_OPT") == 0) {
-                    token = strsep(&cfline, "#\r\n " );
-                    memcpy(s->opt,token, strlen(token));
-                }
-            }
-        }
-        fclose(file);
-    } else {
-        perror(CONFILE);
-        return -1;
-    }
-    del_doubleCommas(s->pin);
-    del_doubleCommas(s->cmd);
-    del_doubleCommas(s->opt);
-    return 0;
+	if (file != NULL) {
+		char line[MAXBUF];
+		while(fgets(line, sizeof(line), file) != NULL) {
+			char *token; 	// Keywords
+			char *cfline; 	// Valid configuration line
+			// Skipping Commented line
+			if ( line[0] == '#' ) {
+				continue;
+			}
+			// Skipping invalid line
+			if ( strchr((char *)line, '=') == 0 ) {
+				continue;
+			}
+			else {
+				cfline=(char*)line;
+				token = strsep(&cfline, "=" );
+				if (strcmp(token,"PSUD_PIN") == 0) {
+					token = strsep(&cfline, "# \r\n" );
+					memcpy((char *)s->pin,token, strlen(token));
+				}
+				if (strcmp(token,"PSUD_CMD") == 0) {
+					token = strsep(&cfline, "#\r\n" );
+					memcpy(s->cmd,token, strlen(token));
+				}
+				if (strcmp(token,"PSUD_OPT") == 0) {
+					token = strsep(&cfline, "#\r\n " );
+					memcpy(s->opt,token, strlen(token));
+				}
+			}
+		}
+		fclose(file);
+	} else {
+		perror(CONFILE);
+		return -1;
+	}
+	del_doubleCommas(s->pin);
+	del_doubleCommas(s->cmd);
+	del_doubleCommas(s->opt);
+	return 0;
 }
 
