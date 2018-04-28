@@ -43,6 +43,10 @@
 FILE *lockfile;
 
 void psud_quit(int r) {
+	if ( r == SIGHUP ) {
+		get_config(CONFILE, &config);
+		return;
+	}
 	syslog(LOG_NOTICE,"Signal received (%d), quitting.\n", r);
 	fclose(lockfile);
 	remove (LOCK);
@@ -69,7 +73,6 @@ int main(int argc, char **argv) {
 	/*
 	 * Getting valid configuration
 	 */
-	struct psu_config config;
 	memset(&config, 0, sizeof(config));
 	if (( get_config(CONFILE, &config)) == -1 ) {
 		return 1;

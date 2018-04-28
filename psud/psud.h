@@ -42,7 +42,7 @@ struct psu_config {
 	char pin[2];
 	char cmd[MAXBUF];
 	char opt[MAXBUF];
-};
+} config;
 
 int get_config(char *, struct psu_config *);
 
