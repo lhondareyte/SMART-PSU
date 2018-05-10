@@ -78,6 +78,7 @@ asm: $(FIRMWARE).out
 bin: $(FIRMWARE).out 
 	@printf "Generating $(FIRMWARE).bin ... "
 	@$(OBJCOPY) -R .eeprom -O binary $(FIRMWARE).out  \
+	      --gap-fill=0xff --pad-to=0x400  \
 		$(FIRMWARE).bin
 	@echo "done."
 	@ls -l $(FIRMWARE).bin
