@@ -31,6 +31,9 @@ include config.mk
 CCPATH		:=/usr/local/CrossPack-AVR/bin
 CC		:=$(CCPATH)/avr-gcc
 OBJCOPY		:=$(CCPATH)/avr-objcopy
+ifeq ($(MCU), $(filter $(MCU), attiny13 attiny13a))
+	OBJCOPY_OPTS =--gap-fill=0xff --pad-to=0x400  
+endif
 CFLAGS		+=-Os 
 CFLAGS		+=-g -mmcu=$(MCU) -Wall -Wstrict-prototypes
 CFLAGS		+=-D __BREADBOARD__
@@ -78,10 +81,8 @@ asm: $(FIRMWARE).out
 bin: $(FIRMWARE).out 
 	@printf "Generating $(FIRMWARE).bin ... "
 	@$(OBJCOPY) -R .eeprom -O binary $(FIRMWARE).out  \
-	      --gap-fill=0xff --pad-to=0x400  \
-		$(FIRMWARE).bin
+		$(OBJCOPY_OPTS) $(FIRMWARE).bin
 	@echo "done."
-	@ls -l $(FIRMWARE).bin
 #
 # Configuration du programmateur ISP
 LOADER=	avrdude
