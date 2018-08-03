@@ -1,11 +1,6 @@
-EESchema Schematic File Version 2
-LIBS:power
-LIBS:device
-LIBS:transistors
-LIBS:conn
-LIBS:regul
+EESchema Schematic File Version 4
 LIBS:smart-psu-cache
-EELAYER 25 0
+EELAYER 26 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
@@ -20,7 +15,7 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L C_Small C4
+L Device:C_Small C4
 U 1 1 5A367225
 P 5800 3900
 F 0 "C4" H 5700 4000 44  0000 L CNN
@@ -35,7 +30,7 @@ FAULT
 Text Label 8450 3550 2    44   ~ 0
 ~PWRON
 $Comp
-L GND #PWR11
+L power:GND #PWR11
 U 1 1 5A36723C
 P 5100 4050
 F 0 "#PWR11" H 5100 3800 50  0001 C CNN
@@ -46,7 +41,7 @@ F 3 "" H 5100 4050 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L PWR_FLAG #FLG2
+L power:PWR_FLAG #FLG2
 U 1 1 5A36723E
 P 3400 4950
 F 0 "#FLG2" H 3400 5025 50  0001 C CNN
@@ -57,7 +52,7 @@ F 3 "" H 3400 4950 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L PWR_FLAG #FLG1
+L power:PWR_FLAG #FLG1
 U 1 1 5A36723F
 P 3000 5200
 F 0 "#FLG1" H 3000 5275 50  0001 C CNN
@@ -68,7 +63,7 @@ F 3 "" H 3000 5200 50  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L GND #PWR4
+L power:GND #PWR4
 U 1 1 5A367240
 P 3400 5200
 F 0 "#PWR4" H 3400 4950 50  0001 C CNN
@@ -79,7 +74,7 @@ F 3 "" H 3400 5200 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +5V #PWR2
+L power:+5V #PWR2
 U 1 1 5A367241
 P 3000 4950
 F 0 "#PWR2" H 3000 4800 50  0001 C CNN
@@ -90,7 +85,7 @@ F 3 "" H 3000 4950 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L ATTINY13-20SSU U2
+L smart-psu-rescue:ATTINY13-20SSU U2
 U 1 1 5A36742E
 P 7050 3800
 F 0 "U2" H 7850 4200 50  0000 C CNN
@@ -101,7 +96,7 @@ F 3 "" H 6250 4150 50  0001 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L GND #PWR15
+L power:GND #PWR15
 U 1 1 5A367BD2
 P 6000 4250
 F 0 "#PWR15" H 6000 4000 50  0001 C CNN
@@ -112,10 +107,10 @@ F 3 "" H 6000 4250 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	5800 3350 5800 3800
+	5800 3350 5800 3550
 Connection ~ 5800 3550
 $Comp
-L LM2596 U1
+L smart-psu-rescue:LM2596 U1
 U 1 1 5A37884F
 P 3850 3650
 F 0 "U1" H 4200 3450 60  0000 C CNN
@@ -126,7 +121,7 @@ F 3 "" H 3850 3650 60  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR5
+L power:GND #PWR5
 U 1 1 5A378850
 P 3700 4050
 F 0 "#PWR5" H 3700 3800 50  0001 C CNN
@@ -137,7 +132,7 @@ F 3 "" H 3700 4050 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR7
+L power:GND #PWR7
 U 1 1 5A378851
 P 4000 4050
 F 0 "#PWR7" H 4000 3800 50  0001 C CNN
@@ -152,7 +147,7 @@ Wire Wire Line
 Wire Wire Line
 	4000 4050 4000 4000
 $Comp
-L L_Core_Ferrite_Small L1
+L Device:L_Core_Ferrite_Small L1
 U 1 1 5A378852
 P 4650 3750
 F 0 "L1" V 4750 3800 50  0000 L CNN
@@ -163,7 +158,7 @@ F 3 "" H 4650 3750 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L D_Schottky_Small_ALT D1
+L smart-psu-rescue:D_Schottky_Small_ALT D1
 U 1 1 5A378853
 P 4500 3900
 F 0 "D1" V 4500 3750 50  0000 L CNN
@@ -177,7 +172,7 @@ Wire Wire Line
 	4500 3800 4500 3750
 Connection ~ 4500 3750
 $Comp
-L GND #PWR8
+L power:GND #PWR8
 U 1 1 5A378854
 P 4500 4050
 F 0 "#PWR8" H 4500 3800 50  0001 C CNN
@@ -190,7 +185,7 @@ $EndComp
 Wire Wire Line
 	4500 4050 4500 4000
 $Comp
-L CP1_Small C2
+L Device:CP1_Small C2
 U 1 1 5A378855
 P 4800 3900
 F 0 "C2" H 4810 3970 50  0000 L CNN
@@ -201,7 +196,7 @@ F 3 "" H 4800 3900 50  0001 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L GND #PWR10
+L power:GND #PWR10
 U 1 1 5A378856
 P 4800 4050
 F 0 "#PWR10" H 4800 3800 50  0001 C CNN
@@ -215,7 +210,7 @@ Connection ~ 4800 3750
 Wire Wire Line
 	4800 4050 4800 4000
 $Comp
-L +5V #PWR9
+L power:+5V #PWR9
 U 1 1 5A378857
 P 4800 3000
 F 0 "#PWR9" H 4800 2850 50  0001 C CNN
@@ -227,7 +222,7 @@ F 3 "" H 4800 3000 50  0001 C CNN
 $EndComp
 Connection ~ 4800 3550
 $Comp
-L CP1_Small C1
+L Device:CP1_Small C1
 U 1 1 5A378858
 P 3200 3900
 F 0 "C1" H 3210 3970 50  0000 L CNN
@@ -238,7 +233,7 @@ F 3 "" H 3200 3900 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR3
+L power:GND #PWR3
 U 1 1 5A378859
 P 3200 4050
 F 0 "#PWR3" H 3200 3800 50  0001 C CNN
@@ -254,7 +249,7 @@ Wire Wire Line
 	3200 3800 3200 3550
 Connection ~ 3200 3550
 $Comp
-L Screw_Terminal_1x02 J1
+L smart-psu-rescue:Screw_Terminal_1x02 J1
 U 1 1 5A37885A
 P 2750 3650
 F 0 "J1" H 2750 3900 50  0000 C TNN
@@ -265,7 +260,7 @@ F 3 "" H 2725 3650 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR1
+L power:GND #PWR1
 U 1 1 5A37885B
 P 3000 4050
 F 0 "#PWR1" H 3000 3800 50  0001 C CNN
@@ -282,9 +277,9 @@ Wire Wire Line
 Wire Wire Line
 	4800 3750 4750 3750
 Wire Wire Line
-	4450 3750 4550 3750
+	4450 3750 4500 3750
 $Comp
-L +5V #PWR16
+L power:+5V #PWR16
 U 1 1 5A3824C8
 P 6550 2050
 F 0 "#PWR16" H 6550 1900 50  0001 C CNN
@@ -295,9 +290,9 @@ F 3 "" H 6550 2050 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	4800 3000 4800 3800
+	4800 3000 4800 3550
 $Comp
-L GND #PWR14
+L power:GND #PWR14
 U 1 1 5A3827DD
 P 5800 4050
 F 0 "#PWR14" H 5800 3800 50  0001 C CNN
@@ -316,7 +311,7 @@ Wire Wire Line
 Wire Wire Line
 	3400 5200 3400 4950
 $Comp
-L D_Schottky_Small_ALT D2
+L smart-psu-rescue:D_Schottky_Small_ALT D2
 U 1 1 5A382D9D
 P 4950 3550
 F 0 "D2" H 4900 3650 50  0000 L CNN
@@ -327,7 +322,7 @@ F 3 "" V 4950 3550 50  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L Fuse_Small F1
+L Device:Fuse_Small F1
 U 1 1 5A38D757
 P 6700 2100
 F 0 "F1" H 6600 2025 50  0000 C CNN
@@ -340,7 +335,7 @@ $EndComp
 Text Label 6300 2700 0    44   ~ 0
 ~PWRON
 $Comp
-L VCC #PWR13
+L power:VCC #PWR13
 U 1 1 5A79EF6A
 P 5800 3350
 F 0 "#PWR13" H 5800 3200 50  0001 C CNN
@@ -351,7 +346,7 @@ F 3 "" H 5800 3350 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L VCC #PWR6
+L power:VCC #PWR6
 U 1 1 5A79F05F
 P 3800 4950
 F 0 "#PWR6" H 3800 4800 50  0001 C CNN
@@ -362,7 +357,7 @@ F 3 "" H 3800 4950 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L PWR_FLAG #FLG3
+L power:PWR_FLAG #FLG3
 U 1 1 5A79F091
 P 3800 5200
 F 0 "#FLG3" H 3800 5275 50  0001 C CNN
@@ -379,7 +374,7 @@ Wire Wire Line
 Wire Wire Line
 	6000 4050 6050 4050
 $Comp
-L GND #PWR19
+L power:GND #PWR19
 U 1 1 5AB88D16
 P 8950 4150
 F 0 "#PWR19" H 8950 3900 50  0001 C CNN
@@ -396,7 +391,7 @@ Wire Wire Line
 Wire Wire Line
 	9050 3550 8750 3550
 $Comp
-L LED_Small_ALT D3
+L Device:LED_Small_ALT D3
 U 1 1 5AC21F2C
 P 7500 2700
 F 0 "D3" V 7550 2800 50  0000 L CNN
@@ -407,7 +402,7 @@ F 3 "" V 7500 2700 50  0001 C CNN
 	0    1    -1   0   
 $EndComp
 $Comp
-L GND #PWR18
+L power:GND #PWR18
 U 1 1 5ACA4675
 P 7500 2950
 F 0 "#PWR18" H 7500 2700 50  0001 C CNN
@@ -422,7 +417,7 @@ LOAD
 Text Label 8450 3950 2    44   ~ 0
 DELAY1
 $Comp
-L R_Small R2
+L Device:R_Small R2
 U 1 1 5AC2239F
 P 7500 2300
 F 0 "R2" H 7550 2275 50  0000 L CNN
@@ -443,7 +438,7 @@ Wire Wire Line
 Text Label 8750 3550 0    44   ~ 0
 LOAD
 $Comp
-L R_Small R3
+L Device:R_Small R3
 U 1 1 5ACA818F
 P 6850 2300
 F 0 "R3" H 6900 2275 50  0000 L CNN
@@ -454,7 +449,7 @@ F 3 "" H 6850 2300 50  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L AZ1117-3.3 U3
+L smart-psu-rescue:AZ1117-3.3 U3
 U 1 1 5ACA8A4E
 P 5450 3550
 F 0 "U3" H 5300 3300 50  0000 C CNN
@@ -465,11 +460,11 @@ F 3 "" H 5450 3550 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	4450 3550 4850 3550
+	4450 3550 4800 3550
 Wire Wire Line
-	2950 3550 3250 3550
+	2950 3550 3200 3550
 $Comp
-L GND #PWR12
+L power:GND #PWR12
 U 1 1 5ACA9DF6
 P 5450 4050
 F 0 "#PWR12" H 5450 3800 50  0001 C CNN
@@ -480,7 +475,7 @@ F 3 "" H 5450 4050 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L CP1_Small C3
+L Device:CP1_Small C3
 U 1 1 5A36723B
 P 5100 3900
 F 0 "C3" H 5110 3970 50  0000 L CNN
@@ -491,7 +486,7 @@ F 3 "" H 5100 3900 50  0001 C CNN
 	-1   0    0    -1  
 $EndComp
 Wire Wire Line
-	5750 3550 6050 3550
+	5750 3550 5800 3550
 Wire Wire Line
 	5450 4050 5450 3850
 Wire Wire Line
@@ -499,7 +494,7 @@ Wire Wire Line
 Wire Wire Line
 	5100 3800 5100 3550
 Wire Wire Line
-	5050 3550 5150 3550
+	5050 3550 5100 3550
 Connection ~ 5100 3550
 Wire Wire Line
 	8050 3550 8450 3550
@@ -512,7 +507,7 @@ Wire Wire Line
 Wire Wire Line
 	8450 3950 8050 3950
 $Comp
-L Q_PMOS_GDS Q1
+L Device:Q_PMOS_GDS Q1
 U 1 1 5ACD007E
 P 7100 2200
 F 0 "Q1" V 7000 2050 50  0000 L CNN
@@ -527,12 +522,12 @@ Wire Wire Line
 Wire Wire Line
 	6550 2100 6600 2100
 Wire Wire Line
-	6800 2100 6900 2100
+	6800 2100 6850 2100
 Wire Wire Line
 	6850 2200 6850 2100
 Connection ~ 6850 2100
 $Comp
-L Q_NPN_BEC Q2
+L Device:Q_NPN_BEC Q2
 U 1 1 5ACD0E46
 P 7000 2700
 F 0 "Q2" H 7200 2750 50  0000 L CNN
@@ -547,10 +542,10 @@ Wire Wire Line
 Wire Wire Line
 	6850 2450 7100 2450
 Wire Wire Line
-	7100 2400 7100 2500
+	7100 2400 7100 2450
 Connection ~ 7100 2450
 $Comp
-L GND #PWR17
+L power:GND #PWR17
 U 1 1 5ACD1357
 P 7100 2950
 F 0 "#PWR17" H 7100 2700 50  0001 C CNN
@@ -570,7 +565,7 @@ Wire Wire Line
 	7500 2100 7500 2200
 Connection ~ 7500 2100
 $Comp
-L SW_DIP_x02 SW1
+L smart-psu-rescue:SW_DIP_x02 SW1
 U 1 1 5ACD3525
 P 8900 4800
 F 0 "SW1" H 8900 5050 50  0000 C CNN
@@ -581,7 +576,7 @@ F 3 "" H 8900 4800 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR20
+L power:GND #PWR20
 U 1 1 5ACD42F7
 P 9300 4900
 F 0 "#PWR20" H 9300 4650 50  0001 C CNN
@@ -598,7 +593,7 @@ Wire Wire Line
 Wire Wire Line
 	9200 4700 9300 4700
 Wire Wire Line
-	9300 4700 9300 4900
+	9300 4700 9300 4800
 Wire Wire Line
 	9200 4800 9300 4800
 Connection ~ 9300 4800
@@ -609,7 +604,7 @@ Wire Wire Line
 Text Label 8450 3750 2    44   ~ 0
 ~HB
 $Comp
-L Conn_01x05 J2
+L smart-psu-rescue:Conn_01x05 J2
 U 1 1 5ADDF8EA
 P 9250 3750
 F 0 "J2" H 9250 4050 50  0000 C CNN
@@ -628,9 +623,9 @@ Wire Wire Line
 Text Label 8750 3750 0    44   ~ 0
 ~HB
 Wire Wire Line
-	7300 2100 7750 2100
+	7300 2100 7500 2100
 $Comp
-L R_Small R?
+L Device:R_Small R?
 U 1 1 5AFA8DEA
 P 6650 2700
 F 0 "R?" V 6750 2650 50  0000 L CNN
@@ -644,4 +639,28 @@ Wire Wire Line
 	6300 2700 6550 2700
 Wire Wire Line
 	6750 2700 6800 2700
+Wire Wire Line
+	5800 3550 5800 3800
+Wire Wire Line
+	5800 3550 6050 3550
+Wire Wire Line
+	4500 3750 4550 3750
+Wire Wire Line
+	4800 3750 4800 3800
+Wire Wire Line
+	4800 3550 4800 3750
+Wire Wire Line
+	4800 3550 4850 3550
+Wire Wire Line
+	3200 3550 3250 3550
+Wire Wire Line
+	5100 3550 5150 3550
+Wire Wire Line
+	6850 2100 6900 2100
+Wire Wire Line
+	7100 2450 7100 2500
+Wire Wire Line
+	7500 2100 7750 2100
+Wire Wire Line
+	9300 4800 9300 4900
 $EndSCHEMATC

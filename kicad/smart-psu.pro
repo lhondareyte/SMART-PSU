@@ -1,4 +1,4 @@
-update=Mardi 10 avril 2018 20:09:51
+update=Vendredi 03 août 2018 à 20:09:06
 version=1
 last_client=kicad
 [pcbnew]
@@ -38,16 +38,3 @@ LabSize=60
 [eeschema]
 version=1
 LibDir=
-[eeschema/libraries]
-LibName1=power
-LibName2=device
-LibName3=transistors
-LibName4=conn
-LibName5=regul
-LibName7=microcontrollers
-LibName8=microchip
-LibName9=analog_switches
-LibName10=switches
-LibName11=interface
-LibName12=contrib
-LibName13=atmel
