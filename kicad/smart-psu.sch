@@ -415,7 +415,7 @@ $EndComp
 Text Label 7750 2100 2    44   ~ 0
 LOAD
 Text Label 8450 3950 2    44   ~ 0
-DELAY1
+DELAY
 $Comp
 L Device:R_Small R2
 U 1 1 5AC2239F
@@ -430,9 +430,9 @@ $EndComp
 Text Label 8750 3850 0    44   ~ 0
 FAULT
 Text Label 8300 4700 0    44   ~ 0
-DELAY1
+DELAY
 Text Label 8300 4800 0    44   ~ 0
-DELAY2
+~ACR
 Wire Wire Line
 	8750 3750 9050 3750
 Text Label 8750 3550 0    44   ~ 0
@@ -496,8 +496,6 @@ Wire Wire Line
 Wire Wire Line
 	5050 3550 5100 3550
 Connection ~ 5100 3550
-Wire Wire Line
-	8050 3550 8450 3550
 Wire Wire Line
 	8050 3650 8450 3650
 Wire Wire Line
@@ -598,7 +596,7 @@ Wire Wire Line
 	9200 4800 9300 4800
 Connection ~ 9300 4800
 Text Label 8450 4050 2    44   ~ 0
-DELAY2
+~ACR
 Wire Wire Line
 	8050 4050 8450 4050
 Text Label 8450 3750 2    44   ~ 0
@@ -663,4 +661,6 @@ Wire Wire Line
 	7500 2100 7750 2100
 Wire Wire Line
 	9300 4800 9300 4900
+Wire Wire Line
+	8050 3550 8450 3550
 $EndSCHEMATC
