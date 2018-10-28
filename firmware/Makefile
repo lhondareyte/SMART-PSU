@@ -32,7 +32,16 @@ CCPATH		:=/usr/local/CrossPack-AVR/bin
 CC		:=$(CCPATH)/avr-gcc
 OBJCOPY		:=$(CCPATH)/avr-objcopy
 ifeq ($(MCU), $(filter $(MCU), attiny13 attiny13a))
+	LOADER = minipro -S -w $(FIRMWARE).bin -c code -p ATTINY13
+	RFUSE  = minipro -r fuses.TXT -c config -p ATTINY13
+	WFUSE  = minipro -w fuses.txt -c config -p ATTINY13
+	DUMP   = minipro -S -r $(FIRMWARE).bin -c code -p ATTINY13
 	OBJCOPY_OPTS =--gap-fill=0xff --pad-to=0x400  
+else
+	LOADER = avrdude -q -p $(MCU) -c usbasp -i 5 -U flash:w:$(FIRMWARE).hex
+	RFUSE  = avrdude -q -p $(MCU) -c usbasp -U lfuse:r:low.txt:b -U hfuse:r:high.txt:b
+	WFUSE  = avrdude -q -p $(MCU) -c usbasp -U lfuse:w:$(LFUSE):m -U hfuse:w:$(HFUSE):m
+	DUMP   = avrdude -q -p $(MCU) -c usbasp -i 5 -U flash:r:$(FIRMWARE).hex:i
 endif
 CFLAGS		+=-Os 
 CFLAGS		+=-g -mmcu=$(MCU) -Wall -Wstrict-prototypes
@@ -46,10 +55,10 @@ OBJECTS		+= $(patsubst %.s,%.o,$(ASMSRCS))
 ASMFLAGS	:=-Os -mmcu=$(MCU) -x assembler-with-cpp -gstabs
 ASMFLAGS	+=-I /usr/local/avr/include
 
-all: $(FIRMWARE).hex 
+all: $(FIRMWARE).hex $(FIRMWARE).bin
 
-coffee: all load verify wfuse mrproper
-	@echo "All is nice. Have a good day."
+coffee: all load wfuse mrproper
+	@echo "All is nice. Have a good day!"
 
 $(FIRMWARE).hex: $(FIRMWARE).out $(HEADERS) $(SOURCES)
 	@printf "Generating $(FIRMWARE).hex ... "
@@ -78,40 +87,18 @@ asm: $(FIRMWARE).out
 	@$(CCPATH)/avr-objdump -D -S $(FIRMWARE).out > $(FIRMWARE).s
 	@echo "done."
 
-bin: $(FIRMWARE).out 
+$(FIRMWARE).bin: $(FIRMWARE).out 
 	@printf "Generating $(FIRMWARE).bin ... "
 	@$(OBJCOPY) -R .eeprom -O binary $(FIRMWARE).out  \
 		$(OBJCOPY_OPTS) $(FIRMWARE).bin
 	@echo "done."
-#
-# Configuration du programmateur ISP
-LOADER=	avrdude
-ISP	:=-c usbasp
-
-LOADER	:=$(LOADER) -p $(MCU) $(ISP)
-LOAD	:=$(LOADER) -i 5 -U flash:w:$(FIRMWARE).hex
-DUMP	:=$(LOADER) -i 5 -U flash:r:$(FIRMWARE).hex:i
-VERIFY	:=$(LOADER) -i 5 -U flash:v:$(FIRMWARE).hex
-ERASE	:=$(LOADER) -i 5 -e
-RFUSE	:=$(LOADER) -U lfuse:r:low.txt:h -U hfuse:r:high.txt:h -U efuse:r:extd.txt:h
-WFUSE	:=$(LOADER) -U lfuse:w:$(LFUSE):m -U hfuse:w:$(HFUSE):m -U efuse:w:$(EFUSE):m
-
 load:
 	@printf "Loading firmware..."
-	@minipro -S -w smart-psu.bin -c code -p ATTINY13 > /dev/null 2>&1
+	@$(LOADER) > /dev/null 2>&1
 	@echo "done."
 dump:
 	@printf "Reading $(MCU) device..."
 	@$(DUMP) > /dev/null 2>&1
-	@echo "done."
-verify:
-	@printf "Verify $(MCU) device..."
-	@$(VERIFY) > /dev/null 2>&1
-	$(VERIFY) 
-	@echo "done."
-erase:
-	@printf "Erasing $(MCU) device..."
-	@$(ERASE) > /dev/null 2>&1
 	@echo "done."
 rfuse:
 	@printf "Reading fuse..."
@@ -119,12 +106,8 @@ rfuse:
 	@echo "done."
 wfuse:
 	@printf "Writing fuse..."
-	@minipro -w fuses.txt -c config -p ATTINY13 > /dev/null 2>&1
+	@$(WFUSE) > /dev/null 2>&1
 	@echo "done."
-dload:
-	$(LOAD) 
-dfuse:
-	$(WFUSE)
 #
 # Nettoyage, Archivage, etc.
 clean :
