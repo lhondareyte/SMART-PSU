@@ -1,5 +1,5 @@
 /*
- * Copyright (c)2018, Luc Hondareyte
+ * Copyright (c)2018-2019, Luc Hondareyte
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without 
@@ -43,6 +43,7 @@ int get_config(char *filename, struct psu_config *s) {
 
 	if (file != NULL) {
 		char line[MAXBUF];
+		memset(&s, 0, sizeof(s));
 		while(fgets(line, sizeof(line), file) != NULL) {
 			char *token; 	// Keywords
 			char *cfline; 	// Valid configuration line
