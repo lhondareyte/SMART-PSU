@@ -69,6 +69,7 @@ int get_config(char *filename, struct psu_config *s) {
 					token = strsep(&cfline, "#\r\n " );
 					memcpy(s->opt,token, strlen(token));
 				}
+				del_doubleCommas(token);
 			}
 		}
 		fclose(file);
@@ -76,9 +77,6 @@ int get_config(char *filename, struct psu_config *s) {
 		perror(CONFILE);
 		return -1;
 	}
-	del_doubleCommas(s->pin);
-	del_doubleCommas(s->cmd);
-	del_doubleCommas(s->opt);
 	return 0;
 }
 
