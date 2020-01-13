@@ -6,9 +6,9 @@ CFLAGS	= -O2 -Wall
 
 LDFLAGS	= -lgpio
 
-HEADERS	= $(shell ls *.h)
-SOURCES	= $(shell ls *.c)
-OBJECTS = $(subst .c,.o,$(SOURCES))
+HEADERS	= psud.h
+SOURCES	= psud.c config.c
+OBJECTS = psud.o config.o
 
 $(PRG): $(OBJECTS)
 	@printf "Linking   $@:"
