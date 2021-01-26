@@ -43,7 +43,6 @@ int get_config(char *filename, struct psu_config *s) {
 
 	if (file != NULL) {
 		char line[MAXBUF];
-		memset(&s, 0, sizeof(s));
 		while(fgets(line, sizeof(line), file) != NULL) {
 			char *token; 	// Keywords
 			char *cfline; 	// Valid configuration line
@@ -60,7 +59,7 @@ int get_config(char *filename, struct psu_config *s) {
 				token = strsep(&cfline, "=" );
 				if (strcmp(token,"PSUD_PIN") == 0) {
 					token = strsep(&cfline, "# \r\n" );
-					memcpy((char *)s->pin,token, strlen(token));
+					memcpy(s->pin,token, strlen(token));
 				}
 				if (strcmp(token,"PSUD_CMD") == 0) {
 					token = strsep(&cfline, "#\r\n" );
@@ -78,6 +77,7 @@ int get_config(char *filename, struct psu_config *s) {
 		perror(CONFILE);
 		return -1;
 	}
+	if ((s->cmd[0] == '\0') || (s->pin[0] == '\0') || (s->opt[0] == '\0')) return -1;
 	return 0;
 }
 

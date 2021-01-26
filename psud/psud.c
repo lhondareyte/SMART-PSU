@@ -1,5 +1,5 @@
 /*
- * Copyright (c)2018, Luc Hondareyte
+ * Copyright (c)2018,2020 Luc Hondareyte
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without 
@@ -44,6 +44,7 @@ FILE *lockfile;
 
 void psud_quit(int r) {
 	if ( r == SIGHUP ) {
+		memset(&config, 0, sizeof(config));
 		get_config(CONFILE, &config);
 		return;
 	}
