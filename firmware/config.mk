@@ -27,13 +27,13 @@
 #
 
 FIRMWARE	:=smart-psu
-MCU		:=attiny13
-LFUSE		:=0x71
-HFUSE		:=0xff
+#MCU		:=attiny13
+#LFUSE		:=0x71
+#HFUSE		:=0xff
 #MCU		:=attiny13a
 
-#MCU		:=atmega328p
-#LFUSE		:=0xff
-#HFUSE		:=0xdf
-#EFUSE		:=0x05
+MCU		:=atmega328p
+LFUSE		:=0xff
+HFUSE		:=0xdf
+EFUSE		:=0x05
 

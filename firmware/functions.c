@@ -1,5 +1,5 @@
 /*
- * Copyright (c)2018-2021, Luc Hondareyte
+ * Copyright (c)2018, Luc Hondareyte
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without 
@@ -27,7 +27,7 @@
 /*
  * POWER BUTTON - AVR Version
  *
- * Copyright (c)2018-2021, Luc Hondareyte
+ * Copyright (c)2018, Luc Hondareyte
  * All rights reserved.
  *
  * $Id$
@@ -35,83 +35,58 @@
 
 #include "smart-psu.h"
 
-uint8_t pwr_state=OFF;
-uint8_t os_state=OFF;
-
-uint16_t volatile ms_seconds=0;
-
-
-ISR (INT0_vect) {
-	// Wake-up MCU on key pressed
+void storeBoardState (void) {
+	return;
 }
 
-#if defined (__AVR_ATtiny13A__) || defined (__AVR_ATtiny13__)
-ISR (TIM0_OVF_vect)
-#else
-ISR (TIMER0_OVF_vect)
-#endif
-{
-	ms_seconds++;
+inline void setupHardware(void ) {
+
+	// Set ports direction
+	D_PORT=0x00;
+	setBit(D_PORT,FAULT);   // Fault alarm
+	setBit(D_PORT,PWR);     // MOSFET Trigger
+	setBit(D_PORT,GPIO);    // To SBC GPIO
+	clearBit(D_PORT,PWR_SW);
+	// Pullup resistor on button pin
+	setBit(I_PORT,PWR_SW);
+
+	// Configure INT0
+	clearBit(INTRGST,ISC00);
+	clearBit(INTRGST,ISC01);
+	enable_INT0();
+
+	// Configure TIMER0
+	TIMSK0 |= (1<<TOIE0);
+	sei();
 }
 
-int main(void) {
 
-	setupHardware();
-	/*
-	 * Power-down configuration
-	 */
-	switchOff();
-	set_sleep_mode(SLEEP_MODE_PWR_DOWN);
-	pwr_state=OFF;
-	os_state=OFF;
-	/*
-	 * main loop
-	 */
-	while (1) {
-		sleep_enable();
-		sleep_mode();
-		/* 
-		 *   ...zzzzzzzzzzzz
-		 *   Waiting for INT0.
-		 */
-		sleep_disable();
-		disable_INT0();
-		/*
-		 *  Board is already ON
-		 */
-		if (pwr_state == ON) {
-			if (os_state == ON) {
-				shutdown();
-				startTimer(SHUTDOWN_TIMEOUT);
-					while (( ms_seconds > 0 ) || ( os_state == ON )) {
-						os_state=bit_is_clear(I_PORT,GPIO);
-						ms_wait(10);
-					}
-			}
-			ms_wait(250);
-			switchOff();
-			os_state=OFF;
-			pwr_state=OFF;
-		}
-		/*
-		 *  Board is OFF
-		 */
-		else {
-			switchOn();
-			pwr_state=ON;
-			os_state=ON;
-			startTimer(STARTUP_TIMEOUT);
-			while (ms_seconds > 0) {
-				ms_wait(5);
-				if ( bit_is_clear(O_PORT,PWR_SW)) {
-					switchOff();
-					pwr_state=OFF;
-					os_state=OFF;
-					break;
-				}
-			}
-		}
-		enable_INT0();
+void ms_wait(uint8_t n) {
+	while (n) {
+		_delay_ms(1);
+		n--;
 	}
 }
 
+inline void shutdown(void) {
+	clearBit(O_PORT,GPIO);
+	ms_wait(250);
+	setBit(O_PORT,GPIO);
+}
+
+void startTimer(uint16_t n) {
+	n++;
+}
+
+void stopTimer(void) {
+}
+
+/* 
+ * Blinking FAULT led forever
+ */
+inline void fault(void) {
+	while(1) {
+		_delay_ms(200);
+		O_PORT ^= FAULT_MASK;
+	}
+}

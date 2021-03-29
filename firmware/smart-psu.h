@@ -28,62 +28,97 @@
 #ifndef __POWER_BUTTON_H__
  #define __POWER_BUTTON_H__
 
+#define F_CPU		4800000UL
+
 #include <avr/io.h>
+#include <avr/interrupt.h>
+#include <avr/power.h>
+#include <avr/sleep.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <util/delay.h>
 
-#define  setBit(octet,bit)     ( octet |= (1<<bit))
-#define  clearBit(octet,bit)   ( octet &= ~(1<<bit))
-
+/*
+ * Hardware Configuration
+ */
 #if defined (__AVR_ATtiny13A__)  || defined (__AVR_ATtiny13__)
 
 #undef F_CPU
-#define F_CPU	4800000UL
-/* Interupt mask register */
-#define INTMSKR	GIMSK
-/* Interrupt register */
-#define INTRGST	MCUCR
+#define F_CPU		4800000UL
+#define INTMSKR		GIMSK		// Interupt mask register
+#define INTRGST		MCUCR		// Interrupt register
 
-#define D_PORT	DDRB
-#define PORT	PORTB
-#define IPORT	PINB
-#define PWR	0
-#define BUTTON	1
-#define LED	2
-#define FAULT	3
-#define DELAY	4
+#define D_PORT		DDRB
+#define O_PORT		PORTB
+#define I_PORT		PINB
+#define PWR_SW		0
+#define GPIO		1
+#define PWR		2
+#define FAULT		3
+#define DELAY		4
+#define ACR		5
+#define LED_MASK	4
+#define FAULT_MASK	8
 
 #elif defined (__AVR_ATmega328P__)
 
 #undef F_CPU
-#define F_CPU	16000000UL
-/* Interupt mask register */
-#define INTMSKR	EIMSK
-/* Interrupt register */
-#define INTRGST	EICRA
+#define F_CPU		16000000UL
+#define INTMSKR		EIMSK		// Interupt mask register
+#define INTRGST		EICRA		// Interrupt register 
 
-#define D_PORT	DDRD
-#define PORT	PORTD
-#define IPORT	PIND
-#define BUTTON	2
-#define PWR	3
-#define PWRDWN	4
-#define LED	5
-#define HB	6
+#define D_PORT		DDRD
+#define O_PORT		PORTD
+#define I_PORT		PIND
+#define PWR_SW		2
+#define GPIO		3
+#define PWR		4
+#define DELAY		5
+#define FAULT		6
+#define LED_MASK	4
+#define FAULT_MASK	8
 
 #else
  #error "Device not supported"
 #endif
 
+/*
+ * Macros
+ */
+#define setBit(octet,bit)     ( octet |= (1<<bit))
+#define clearBit(octet,bit)   ( octet &= ~(1<<bit))
+#define enable_INT0()         setBit(INTMSKR,INT0)
+#define disable_INT0()        clearBit(INTMSKR,INT0)
+
 #if defined (__BREADBOARD__)
-#define switchOn(n)	setBit(PORT,n)
-#define switchOff(n)	clearBit(PORT,n)
+
+#define switchOn()	setBit(O_PORT,PWR)
+#define switchOff(n)	clearBit(O_PORT,PWR)
 #else
-#define switchOn(n)	clearBit(PORT,n)
-#define switchOff(n)	setBit(PORT,n)
+#define switchOn()	clearBit(O_PORT,PWR)
+#define switchOff()	setBit(O_PORT,PWR)
+
 #endif
 
-#define NO	0
-#define YES	1
-#define PWR_OFF	0
-#define PWR_ON	1
+/*
+ * Misc
+ */
+#define NO			0
+#define YES			1
+#define OFF			0
+#define ON			1
+#define SHUTDOWN_TIMEOUT	5000	// Time to wait before force power off (ms)
+#define STARTUP_TIMEOUT		2000	// Time before startup that we can force poweroff (ms)
+
+/*
+ * Prototypes
+ */
+void	fault(void);
+void	setupHardware(void);
+void	store(void);
+void	shutdown(void);
+void	ms_wait(uint8_t);
+void	startTimer(uint16_t);
+void	stopTimer(void);
 
 #endif /* __POWER_BUTTON_H__ */

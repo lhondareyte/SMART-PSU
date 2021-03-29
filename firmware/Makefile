@@ -28,11 +28,10 @@
 
 include config.mk
 
-CCPATH		:=/usr/local/CrossPack-AVR/bin
-CC		:=$(CCPATH)/avr-gcc
-OBJCOPY		:=$(CCPATH)/avr-objcopy
+CC	= avr-gcc
+OBJCOPY	= avr-objcopy
 ifeq ($(MCU), $(filter $(MCU), attiny13 attiny13a))
-	LOADER = minipro -S -w $(FIRMWARE).bin -c code -p ATTINY13
+	LOADER = minipro -P -w $(FIRMWARE).bin -c code -p ATTINY13
 	RFUSE  = minipro -r fuses.TXT -c config -p ATTINY13
 	WFUSE  = minipro -w fuses.txt -c config -p ATTINY13
 	DUMP   = minipro -S -r $(FIRMWARE).bin -c code -p ATTINY13
@@ -72,12 +71,12 @@ $(FIRMWARE).out: $(OBJECTS)
 		-Wl,-Map,$(FIRMWARE).map $(OBJECTS)
 	@echo "done."
 
-.c.o:  $(HEADERS) $(SOURCES)
+.c.o:
 	@printf "Compiling $< ... "
 	@$(CC) $(CFLAGS) -c $< -o $@
 	@echo "done."
 
-.s.o: $(HEADERS) $(ASMSRCS)
+.s.o:
 	@printf "Compiling $< ... "
 	@$(CC) $(ASMFLAGS) -c $< -o $@
 	@echo "done."
