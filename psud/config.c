@@ -36,19 +36,20 @@ void removeDoubleCommas(char *s) {
     s[j] = '\0';
 }
 
-int get_config(char *filename, struct psu_config *s) {
+int get_config(char *filename, struct config *s) {
 	FILE *file = fopen (filename, "r");
+	memset(s, 0, sizeof(*s));
 
 	if (file != NULL) {
 		char line[MAXBUF];
 		while(fgets(line, sizeof(line), file) != NULL) {
 			char *token; 	// Keywords
 			char *cfline; 	// Valid configuration line
-			// Skipping Commented line
+			// Skip comments
 			if ( line[0] == '#' ) {
 				continue;
 			}
-			// Skipping invalid line
+			// Skip invalid line
 			if ( strchr((char *)line, '=') == 0 ) {
 				continue;
 			}

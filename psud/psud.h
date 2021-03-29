@@ -38,13 +38,13 @@
 #define LOCK 	"/var/run/psud.pid"
 #define MAXBUF 256
 
-struct psu_config {
+struct config {
 	char pin[2];
 	char cmd[MAXBUF];
 	char opt[MAXBUF];
-} config;
+} psu_config;
 
-int get_config(char *, struct psu_config *);
+int get_config(char *, struct config *);
 
 #endif // __PSUD_H_
 

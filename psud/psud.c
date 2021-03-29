@@ -44,8 +44,8 @@ FILE *lockfile;
 
 void psud_quit(int r) {
 	if ( r == SIGHUP ) {
-		memset(&config, 0, sizeof(config));
-		get_config(CONFILE, &config);
+		get_config(CONFILE, &psu_config);
+		syslog(LOG_NOTICE,"Waiting on pin %s for action (%s/%s).\n", psu_config.pin, psu_config.cmd, psu_config.opt);
 		return;
 	}
 	syslog(LOG_NOTICE,"Signal received (%d), quitting.\n", r);
@@ -74,8 +74,8 @@ int main(int argc, char **argv) {
 	/*
 	 * Getting valid configuration
 	 */
-	memset(&config, 0, sizeof(config));
-	if (( get_config(CONFILE, &config)) == -1 ) {
+	if (( get_config(CONFILE, &psu_config)) == -1 ) {
+		fprintf (stderr, "Error getting configuration.\n");
 		return 1;
 	}
 
@@ -88,6 +88,7 @@ int main(int argc, char **argv) {
 	/*
 	 * Signals handling
 	 */
+	signal(SIGHUP, psud_quit);
 	signal(SIGINT, psud_quit);
 	signal(SIGTERM, psud_quit);
 
@@ -114,18 +115,20 @@ int main(int argc, char **argv) {
 	/*
 	 * Ready to run. 
 	 */
-	int psu_pin = atoi(config.pin);
+	int psu_pin = atoi(psu_config.pin);
 	int buttonstate=UP;
 	gpio_handle_t handle;
 	if (( handle = gpio_open(0)) == -1) {
 		syslog(LOG_NOTICE,"Error : No GPIO found on this platform.\n");
-		psud_quit(15);
+		//psud_quit(15);
 	}
+
 	gpio_pin_input(handle, psu_pin);
 	gpio_pin_low(handle, psu_pin);
 	gpio_pin_pullup(handle, psu_pin);
 
-	syslog(LOG_NOTICE,"Waiting on pin %s for action (%s).\n", config.pin, config.cmd);
+	syslog(LOG_NOTICE,"Waiting on pin %s for action (%s/%s).\n", psu_config.pin, psu_config.cmd, psu_config.opt);
+
 	// Polling for key pressed
 	while(1) {
 		buttonstate = gpio_pin_get(handle, psu_pin);
@@ -135,18 +138,18 @@ int main(int argc, char **argv) {
 			if ((pid = fork()) == -1)
 				perror("fork error");
 			else if (pid == 0) {
-				syslog(LOG_NOTICE, "GPIO %d toggle: Executing PSUD_CMD (%s).\n", psu_pin, (char*)config.cmd);
-				execl("/bin/sh", "sh", "-c", (char*)config.cmd, NULL);
+				syslog(LOG_NOTICE, "GPIO %d toggle: Executing PSUD_CMD (%s).\n", psu_pin, (char*)psu_config.cmd);
+				execl("/bin/sh", "sh", "-c", (char*)psu_config.cmd, NULL);
 				syslog(LOG_NOTICE, "execl error\n");
 				continue;
 
 			} 
-			if (strcmp(config.opt, "WaitAndShoot") == 0 ) {
+			if (strcmp(psu_config.opt, "WaitAndShoot") == 0 ) {
 				syslog(LOG_NOTICE, "Waiting for child process(%d).\n", pid);
 				waitpid(pid, NULL, WEXITED);
-				syslog(LOG_NOTICE, "Toggling output pin.\n");
+				// Toggle pin from ouput and high level to shutoff
 				gpio_pin_output(handle, psu_pin);
-				gpio_pin_low(handle, psu_pin);
+				gpio_pin_high(handle, psu_pin);
 				psud_quit(15);
 			}
 			wait(&status);
