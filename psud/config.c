@@ -1,5 +1,5 @@
 /*
- * Copyright (c)2018-2019, Luc Hondareyte
+ * Copyright (c)2018-2021, Luc Hondareyte
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without 
@@ -27,15 +27,13 @@
 
 #include "psud.h"
 
-void del_doubleCommas(char *s) {
-	char *i, *j;
-	if ( s[0] == '"' ) {
-		for (i=j=s; *i; i++) {
-			if (*i != '"')
-				*(j++) = *i;
-		}
-		*j = '\0';
-	}
+void removeDoubleCommas(char *s) {
+    int j, n = strlen(s);
+    for (int i = j = 0; i < n; i++)
+        if (s[i] != '"')
+            s[j++] = s[i];
+ 
+    s[j] = '\0';
 }
 
 int get_config(char *filename, struct psu_config *s) {
@@ -56,6 +54,7 @@ int get_config(char *filename, struct psu_config *s) {
 			}
 			else {
 				cfline=(char*)line;
+				removeDoubleCommas(cfline);
 				token = strsep(&cfline, "=" );
 				if (strcmp(token,"PSUD_PIN") == 0) {
 					token = strsep(&cfline, "# \r\n" );
@@ -69,7 +68,6 @@ int get_config(char *filename, struct psu_config *s) {
 					token = strsep(&cfline, "#\r\n " );
 					memcpy(s->opt,token, strlen(token));
 				}
-				del_doubleCommas(token);
 			}
 		}
 		fclose(file);

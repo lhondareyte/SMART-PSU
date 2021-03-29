@@ -1,5 +1,5 @@
 /*
- * Copyright (c)2018,2020 Luc Hondareyte
+ * Copyright (c)2018,2021 Luc Hondareyte
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without 
@@ -116,13 +116,16 @@ int main(int argc, char **argv) {
 	 */
 	int psu_pin = atoi(config.pin);
 	int buttonstate=UP;
-
 	gpio_handle_t handle;
-	handle = gpio_open(0);
+	if (( handle = gpio_open(0)) == -1) {
+		syslog(LOG_NOTICE,"Error : No GPIO found on this platform.\n");
+		psud_quit(15);
+	}
 	gpio_pin_input(handle, psu_pin);
 	gpio_pin_low(handle, psu_pin);
 	gpio_pin_pullup(handle, psu_pin);
 
+	syslog(LOG_NOTICE,"Waiting on pin %s for action (%s).\n", config.pin, config.cmd);
 	// Polling for key pressed
 	while(1) {
 		buttonstate = gpio_pin_get(handle, psu_pin);
@@ -132,7 +135,7 @@ int main(int argc, char **argv) {
 			if ((pid = fork()) == -1)
 				perror("fork error");
 			else if (pid == 0) {
-				syslog(LOG_NOTICE, "GPIO Toggle: Executing PSUD_CMD (%s).\n", (char*)config.cmd);
+				syslog(LOG_NOTICE, "GPIO %d toggle: Executing PSUD_CMD (%s).\n", psu_pin, (char*)config.cmd);
 				execl("/bin/sh", "sh", "-c", (char*)config.cmd, NULL);
 				syslog(LOG_NOTICE, "execl error\n");
 				continue;
