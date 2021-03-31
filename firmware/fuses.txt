@@ -1,3 +1,0 @@
-fuses_lo = 0x0071
-fuses_hi = 0x00ff
-lock_byte = 0x00ff

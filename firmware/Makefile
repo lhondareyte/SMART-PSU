@@ -1,5 +1,5 @@
 #
-# Copyright (c)2017, Luc HONDAREYTE
+# Copyright (c)2017-2021, Luc HONDAREYTE
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or 
@@ -28,31 +28,11 @@
 
 include config.mk
 
-CC	= avr-gcc
-OBJCOPY	= avr-objcopy
-ifeq ($(MCU), $(filter $(MCU), attiny13 attiny13a))
-	LOADER = minipro -P -w $(FIRMWARE).bin -c code -p ATTINY13
-	RFUSE  = minipro -r fuses.TXT -c config -p ATTINY13
-	WFUSE  = minipro -w fuses.txt -c config -p ATTINY13
-	DUMP   = minipro -S -r $(FIRMWARE).bin -c code -p ATTINY13
-	OBJCOPY_OPTS =--gap-fill=0xff --pad-to=0x400  
-else
-	LOADER = avrdude -q -p $(MCU) -c usbasp -i 5 -U flash:w:$(FIRMWARE).hex
-	RFUSE  = avrdude -q -p $(MCU) -c usbasp -U lfuse:r:low.txt:b -U hfuse:r:high.txt:b
-	WFUSE  = avrdude -q -p $(MCU) -c usbasp -U lfuse:w:$(LFUSE):m -U hfuse:w:$(HFUSE):m
-	DUMP   = avrdude -q -p $(MCU) -c usbasp -i 5 -U flash:r:$(FIRMWARE).hex:i
-endif
-CFLAGS		+=-Os 
-CFLAGS		+=-g -mmcu=$(MCU) -Wall -Wstrict-prototypes
-CFLAGS		+=-D __BREADBOARD__
-
-HEADERS         += $(shell ls *.h)
-SOURCES         += $(shell ls *.c)
-#ASMSRCS         += $(shell ls *.s)
-OBJECTS         += $(patsubst %.c,%.o,$(SOURCES))
-OBJECTS		+= $(patsubst %.s,%.o,$(ASMSRCS))
-ASMFLAGS	:=-Os -mmcu=$(MCU) -x assembler-with-cpp -gstabs
-ASMFLAGS	+=-I /usr/local/avr/include
+CC         = avr-gcc
+OBJCOPY    = avr-objcopy
+CFLAGS    += -Os -g -mmcu=$(MCU) -Wall -Wstrict-prototypes
+ASMFLAGS   = -Os -mmcu=$(MCU) -x assembler-with-cpp -gstabs
+ASMFLAGS  += -I /usr/local/avr/include
 
 all: $(FIRMWARE).hex $(FIRMWARE).bin
 

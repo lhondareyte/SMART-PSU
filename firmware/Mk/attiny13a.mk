@@ -26,11 +26,13 @@
 # $Id: Makefile,v 1.4 2011/04/25 16:21:03 luc Exp luc $
 #
 
-FIRMWARE   = smart-psu
-MCU        = attiny13
-#MCU       = atmega328p
-HEADERS   += smart-psu.h
-SOURCES   += smart-psu.c functions.c
-OBJECTS   += smart-psu.o functions.o
-
-include Mk/$(MCU).mk
+FIRMWARE     = smart-psu
+#MCU         = attiny13a
+MCU          = attiny13
+LFUSE        = 0x71
+HFUSE        = 0xff
+LOADER       = minipro -P -w $(FIRMWARE).bin -c code -p ATTINY13
+RFUSE        = minipro -r fuses.TXT -c config -p ATTINY13
+WFUSE        = minipro -w fuses.txt -c config -p ATTINY13
+DUMP         = minipro -S -r $(FIRMWARE).bin -c code -p ATTINY13
+OBJCOPY_OPTS = --gap-fill=0xff --pad-to=0x400

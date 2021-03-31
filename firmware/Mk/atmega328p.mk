@@ -26,11 +26,13 @@
 # $Id: Makefile,v 1.4 2011/04/25 16:21:03 luc Exp luc $
 #
 
-FIRMWARE   = smart-psu
-MCU        = attiny13
-#MCU       = atmega328p
-HEADERS   += smart-psu.h
-SOURCES   += smart-psu.c functions.c
-OBJECTS   += smart-psu.o functions.o
+LFUSE   = 0xff
+HFUSE   = 0xdf
+EFUSE   = 0x05
+CFLAGS += -D__BREADBOARD__
+FLASHER = usbtiny
+LOADER  = avrdude -q -p $(MCU) -c $(FLASHER) -i 5 -U flash:w:$(FIRMWARE).hex
+RFUSE   = avrdude -q -p $(MCU) -c $(FLASHER) -U lfuse:r:low.txt:b -U hfuse:r:high.txt:b
+WFUSE   = avrdude -q -p $(MCU) -c $(FLASHER) -U lfuse:w:$(LFUSE):m -U hfuse:w:$(HFUSE):m
+DUMP    = avrdude -q -p $(MCU) -c $(FLASHER) -i 5 -U flash:r:$(FIRMWARE).hex:i
 
-include Mk/$(MCU).mk
