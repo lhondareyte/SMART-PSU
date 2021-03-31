@@ -1,5 +1,5 @@
 /*
- * Copyright (c)2018, Luc Hondareyte
+ * Copyright (c)2018-2021, Luc Hondareyte
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without 
@@ -59,6 +59,7 @@
 #define ACR		5
 #define LED_MASK	4
 #define FAULT_MASK	8
+#define TICKS		66
 
 #elif defined (__AVR_ATmega328P__)
 
@@ -77,6 +78,7 @@
 #define FAULT		6
 #define LED_MASK	4
 #define FAULT_MASK	8
+#define TICKS		66
 
 #else
  #error "Device not supported"
@@ -87,17 +89,16 @@
  */
 #define setBit(octet,bit)     ( octet |= (1<<bit))
 #define clearBit(octet,bit)   ( octet &= ~(1<<bit))
+#define toggleBit(octet,bit)  ( octet ^= (1<<bit))
 #define enable_INT0()         setBit(INTMSKR,INT0)
 #define disable_INT0()        clearBit(INTMSKR,INT0)
 
 #if defined (__BREADBOARD__)
-
-#define switchOn()	setBit(O_PORT,PWR)
-#define switchOff(n)	clearBit(O_PORT,PWR)
+  #define switchOn()	setBit(O_PORT,PWR)
+  #define switchOff(n)	clearBit(O_PORT,PWR)
 #else
-#define switchOn()	clearBit(O_PORT,PWR)
-#define switchOff()	setBit(O_PORT,PWR)
-
+  #define switchOn()	clearBit(O_PORT,PWR)
+  #define switchOff()	setBit(O_PORT,PWR)
 #endif
 
 /*
@@ -107,18 +108,22 @@
 #define YES			1
 #define OFF			0
 #define ON			1
-#define SHUTDOWN_TIMEOUT	5000	// Time to wait before force power off (ms)
-#define STARTUP_TIMEOUT		2000	// Time before startup that we can force poweroff (ms)
+#define SHUTDOWN_TIMEOUT	5000    // Time to wait before force power off (ms)
+#define STARTUP_TIMEOUT		1500    // Time before startup that we can force poweroff (ms)
+
+uint16_t volatile ms_seconds;
+uint8_t volatile ticks;
 
 /*
  * Prototypes
  */
-void	fault(void);
-void	setupHardware(void);
-void	store(void);
-void	shutdown(void);
-void	ms_wait(uint8_t);
-void	startTimer(uint16_t);
-void	stopTimer(void);
+void fault(void);
+void setupHardware(void);
+void store(void);
+void shutdown(void);
+void ms_wait(uint8_t);
+void startTimer(uint16_t);
+void stopTimer(void);
+void PowerOff(void);
 
 #endif /* __POWER_BUTTON_H__ */

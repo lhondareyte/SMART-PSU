@@ -27,8 +27,8 @@
 #
 
 FIRMWARE   = smart-psu
-MCU        = attiny13
-#MCU       = atmega328p
+MCU        = atmega328p
+#MCU        = attiny13
 HEADERS   += smart-psu.h
 SOURCES   += smart-psu.c functions.c
 OBJECTS   += smart-psu.o functions.o

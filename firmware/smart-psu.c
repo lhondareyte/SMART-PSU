@@ -36,10 +36,7 @@
 #include "smart-psu.h"
 
 uint8_t pwr_state=OFF;
-uint8_t os_state=OFF;
-
-uint16_t volatile ms_seconds=0;
-
+uint8_t os_is_running=NO;
 
 ISR (INT0_vect) {
 	// Wake-up MCU on key pressed
@@ -51,67 +48,90 @@ ISR (TIM0_OVF_vect)
 ISR (TIMER0_OVF_vect)
 #endif
 {
-	ms_seconds++;
+	ticks++;
+	if ( ticks == TICKS ) {
+		ticks = 0;
+		ms_seconds--;
+	}
+}
+
+static void Power (void) {
+	/*
+	 *  Board is ON
+	 */
+	disable_INT0();
+	if (pwr_state == ON) {
+		if (os_is_running == YES) {
+			setBit(O_PORT,FAULT);
+			shutdown();
+			startTimer(SHUTDOWN_TIMEOUT);
+			while ( ms_seconds > 0 ) {
+				if (bit_is_set(I_PORT,GPIO)) {
+					stopTimer();
+				       	break;
+				}
+			}
+			pwr_state=OFF;
+			os_is_running=NO;
+			clearBit(O_PORT,FAULT);
+			PowerOff();
+			clearBit(O_PORT,FAULT);
+		}
+	
+	}
+	/*
+	 *  Board is OFF
+	 */
+	else {
+		switchOn();
+		pwr_state=ON;
+		loop_until_bit_is_set(I_PORT,PWR_SW);
+		ms_wait(250);
+		os_is_running=YES;
+		startTimer(STARTUP_TIMEOUT);
+#if defined (__BREADBOARD__)
+		setBit(O_PORT,FAULT);
+#endif
+		while (ms_seconds > 0) {
+			if ( bit_is_clear(I_PORT,PWR_SW)) {
+				stopTimer();
+				pwr_state=OFF;
+				switchOff();
+				break;
+			}
+		}
+#if defined (__BREADBOARD__)
+		clearBit(O_PORT,FAULT);
+#endif
+	}
+	stopTimer();
+	enable_INT0();
 }
 
 int main(void) {
 
+	ticks = 0;
+	ms_seconds = 0;
 	setupHardware();
-	/*
-	 * Power-down configuration
-	 */
+	pwr_state=OFF;
+	os_is_running=NO;
 	switchOff();
 	set_sleep_mode(SLEEP_MODE_PWR_DOWN);
-	pwr_state=OFF;
-	os_state=OFF;
 	/*
 	 * main loop
 	 */
 	while (1) {
-		sleep_enable();
-		sleep_mode();
-		/* 
-		 *   ...zzzzzzzzzzzz
-		 *   Waiting for INT0.
-		 */
-		sleep_disable();
-		disable_INT0();
-		/*
-		 *  Board is already ON
-		 */
-		if (pwr_state == ON) {
-			if (os_state == ON) {
-				shutdown();
-				startTimer(SHUTDOWN_TIMEOUT);
-					while (( ms_seconds > 0 ) || ( os_state == ON )) {
-						os_state=bit_is_clear(I_PORT,GPIO);
-						ms_wait(10);
-					}
-			}
-			ms_wait(250);
-			switchOff();
-			os_state=OFF;
-			pwr_state=OFF;
-		}
-		/*
-		 *  Board is OFF
-		 */
-		else {
-			switchOn();
-			pwr_state=ON;
-			os_state=ON;
-			startTimer(STARTUP_TIMEOUT);
-			while (ms_seconds > 0) {
-				ms_wait(5);
-				if ( bit_is_clear(O_PORT,PWR_SW)) {
-					switchOff();
-					pwr_state=OFF;
-					os_state=OFF;
-					break;
-				}
-			}
-		}
 		enable_INT0();
+		sleep_enable();
+		sei();
+		sleep_cpu();
+		sleep_disable();
+		/*
+		 * zzzzz
+		 */
+		Power();
+		loop_until_bit_is_set(I_PORT,PWR_SW);
+		_delay_ms(250);
 	}
 }
 

@@ -73,7 +73,8 @@ $(FIRMWARE).bin: $(FIRMWARE).out
 	@echo "done."
 load:
 	@printf "Loading firmware..."
-	@$(LOADER) > /dev/null 2>&1
+	#@$(LOADER) > /dev/null 2>&1
+	$(LOADER)
 	@echo "done."
 dump:
 	@printf "Reading $(MCU) device..."
