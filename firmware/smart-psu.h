@@ -51,15 +51,15 @@
 #define D_PORT		DDRB
 #define O_PORT		PORTB
 #define I_PORT		PINB
-#define PWR_SW		0
-#define GPIO		1
+#define GPIO		0
+#define PWR_SW		1
 #define PWR		2
 #define FAULT		3
 #define DELAY		4
 #define ACR		5
 #define LED_MASK	4
 #define FAULT_MASK	8
-#define TICKS		66
+#define TICKS		16
 
 #elif defined (__AVR_ATmega328P__)
 
@@ -117,7 +117,7 @@ uint8_t volatile ticks;
 /*
  * Prototypes
  */
-void fault(uint8_t);
+void alarm(uint8_t);
 void setupHardware(void);
 void store(void);
 void shutdown(void);

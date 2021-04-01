@@ -59,7 +59,6 @@ static void Power (void) {
 	/*
 	 *  Board is ON
 	 */
-	disable_INT0();
 	if (pwr_state == ON) {
 		if (os_is_running == YES) {
 			setBit(O_PORT,FAULT);
@@ -97,7 +96,7 @@ static void Power (void) {
 				stopTimer();
 				pwr_state=OFF;
 				switchOff();
-				fault(20);
+				alarm(12);
 				break;
 			}
 		}
@@ -106,7 +105,6 @@ static void Power (void) {
 #endif
 	}
 	stopTimer();
-	enable_INT0();
 }
 
 int main(void) {
@@ -118,6 +116,7 @@ int main(void) {
 	os_is_running=NO;
 	switchOff();
 	set_sleep_mode(SLEEP_MODE_PWR_DOWN);
+
 	/*
 	 * main loop
 	 */
@@ -126,13 +125,10 @@ int main(void) {
 		sleep_enable();
 		sei();
 		sleep_cpu();
-		sleep_disable();
 		/*
 		 * zzzzz
 		 */
+		sleep_disable();
+		disable_INT0();
 		Power();
-		loop_until_bit_is_set(I_PORT,PWR_SW);
-		_delay_ms(250);
-	}
-}
-
+		loop_until_bit_is_set(I_PORT,PW

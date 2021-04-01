@@ -51,7 +51,7 @@ void setupHardware (void ) {
 
 void ms_wait (uint8_t n) {
 	while (n) {
-		_delay_ms(1);
+		_delay_us(1000);
 		n--;
 	}
 }
@@ -80,30 +80,23 @@ inline void PowerOff (void) {
 void startTimer (uint16_t n) {
 	ms_seconds = n;
 	ticks = 0;
-	// Start timer clk/1024
-#if defined (__AVR_ATmega328P__)
+	// No prescaler
 	TCCR0B = 0x01;
-#else
-	TCCR0 = 0x01;
-#endif
 }
 
 void stopTimer(void) {
 	ms_seconds = 0x0000;
 	ticks = 0;
-#if defined (__AVR_ATmega328P__)
 	TCCR0B = 0x00;
-#else
-	TCCR0 = 0x00;
-#endif
 }
 
 /* 
- * Blinking FAULT led forever
+ * Blinking alarm led
  */
-inline void fault(void) {
-	while(1) {
-		_delay_ms(200);
-		O_PORT ^= FAULT_MASK;
+inline void alarm (uint8_t n) {
+	while(n) {
+		ms_wait(200);
+		toggleBit(O_PORT, FAULT);
+		n--;
 	}
 }
