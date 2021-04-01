@@ -117,7 +117,7 @@ uint8_t volatile ticks;
 /*
  * Prototypes
  */
-void fault(void);
+void fault(uint8_t);
 void setupHardware(void);
 void store(void);
 void shutdown(void);

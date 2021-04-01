@@ -97,6 +97,7 @@ static void Power (void) {
 				stopTimer();
 				pwr_state=OFF;
 				switchOff();
+				fault(20);
 				break;
 			}
 		}
