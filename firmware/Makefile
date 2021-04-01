@@ -1,30 +1,8 @@
 #
-# Copyright (c)2017-2021, Luc HONDAREYTE
-# All rights reserved.
-#
-# Redistribution and use in source and binary forms, with or 
-# without modification, are permitted provided that the 
-# following conditions are met:
-# 1. Redistributions of source code must retain the above 
-#    copyright notice, this list of conditions and the 
-#    following disclaimer.
-#
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND 
-# CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, 
-# INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF 
-# MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE 
-# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
-# CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
-# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
-# NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; 
-# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) 
-# HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
-# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
-# OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
-# SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-#
 # $Id: Makefile,v 1.4 2011/04/25 16:21:03 luc Exp luc $
 #
+
+default: all
 
 include config.mk
 
@@ -39,13 +17,13 @@ all: $(FIRMWARE).hex $(FIRMWARE).bin
 coffee: all load wfuse mrproper
 	@echo "All is nice. Have a good day!"
 
-$(FIRMWARE).hex: $(FIRMWARE).out $(HEADERS) $(SOURCES)
+$(FIRMWARE).hex: $(FIRMWARE).out
 	@printf "Generating $(FIRMWARE).hex ... "
 	@$(OBJCOPY) -R .eeprom -O ihex $(FIRMWARE).out  \
 		$(FIRMWARE).hex
 	@echo "done."
 
-$(FIRMWARE).out: $(OBJECTS)
+$(FIRMWARE).out: $(OBJECTS) $(HEADERS) $(SOURCES)
 	@printf "Linking $(FIRMWARE) ... "
 	@$(CC) $(CFLAGS) -o $(FIRMWARE).out \
 		-Wl,-Map,$(FIRMWARE).map $(OBJECTS)
@@ -73,8 +51,7 @@ $(FIRMWARE).bin: $(FIRMWARE).out
 	@echo "done."
 load:
 	@printf "Loading firmware..."
-	#@$(LOADER) > /dev/null 2>&1
-	$(LOADER)
+	@$(LOAD) > /dev/null 2>&1
 	@echo "done."
 dump:
 	@printf "Reading $(MCU) device..."
@@ -84,16 +61,18 @@ rfuse:
 	@printf "Reading fuse..."
 	@$(RFUSE) > /dev/null 2>&1
 	@echo "done."
-wfuse:
+
+wfuse: fuses.txt
 	@printf "Writing fuse..."
-	@$(WFUSE) > /dev/null 2>&1
+	#@$(WFUSE) > /dev/null 2>&1
+	$(WFUSE)
 	@echo "done."
 #
 # Nettoyage, Archivage, etc.
 clean :
 	@printf "Cleaning source tree..."
 	@rm -f *.map *.bin *~ *.out *.gch *.o \
-		low.txt high.txt $(FIRMWARE) $(FIRMWARE).asm *.hex
+		low.txt high.txt $(FIRMWARE) $(FIRMWARE).asm *.hex fuses.???
 	@echo "done."
 
 #EOF
