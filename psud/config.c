@@ -73,7 +73,7 @@ int get_config(char *filename, struct config *s) {
 		}
 		fclose(file);
 	} else {
-		perror(CONFILE);
+		perror(filename);
 		return -1;
 	}
 	if ((s->cmd[0] == '\0') || (s->pin[0] == '\0') || (s->opt[0] == '\0')) return -1;
