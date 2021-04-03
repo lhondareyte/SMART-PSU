@@ -71,6 +71,9 @@ static void Power (void) {
 				}
 			}
 			pwr_state=OFF;
+#if defined (__ACRECOVERY__)
+			saveConfiguration(pwr_state);
+#endif
 			os_is_running=NO;
 			clearBit(O_PORT,FAULT);
 			PowerOff();
@@ -84,6 +87,9 @@ static void Power (void) {
 	else {
 		switchOn();
 		pwr_state=ON;
+#if defined (__ACRECOVERY__)
+		saveConfiguration(pwr_state);
+#endif
 		loop_until_bit_is_set(I_PORT,PWR_SW);
 		ms_wait(250);
 		os_is_running=YES;
@@ -95,6 +101,9 @@ static void Power (void) {
 			if ( bit_is_clear(I_PORT,PWR_SW)) {
 				stopTimer();
 				pwr_state=OFF;
+#if defined (__ACRECOVERY__)
+				saveConfiguration(pwr_state);
+#endif
 				switchOff();
 				alarm(12);
 				break;
@@ -112,7 +121,17 @@ int main(void) {
 	ticks = 0;
 	ms_seconds = 0;
 	setupHardware();
+#if defined (__ACRECOVERY__)
+	if (bit_is_set(I_PORT, ACR)) {
+		pwr_state=OFF;
+	}
+	else {
+		pwr_state = loadConfiguration();
+		if ( pwr_state > 0x00 ) pwr_state = ON;
+	}
+#else
 	pwr_state=OFF;
+#endif
 	os_is_running=NO;
 	switchOff();
 	set_sleep_mode(SLEEP_MODE_PWR_DOWN);
@@ -131,4 +150,7 @@ int main(void) {
 		sleep_disable();
 		disable_INT0();
 		Power();
-		loop_until_bit_is_set(I_PORT,PW
+		loop_until_bit_is_set(I_PORT,PWR_SW);
+		_delay_ms(250);
+	}
+}

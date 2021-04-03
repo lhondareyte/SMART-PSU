@@ -30,8 +30,10 @@
 
 #define F_CPU		4800000UL
 
-#include <avr/io.h>
+#include <avr/eeprom.h>
 #include <avr/interrupt.h>
+#include <avr/io.h>
+#include <avr/pgmspace.h>
 #include <avr/power.h>
 #include <avr/sleep.h>
 #include <stdlib.h>
@@ -41,6 +43,7 @@
 /*
  * Hardware Configuration
  */
+
 #if defined (__AVR_ATtiny13A__)  || defined (__AVR_ATtiny13__)
 
 #undef F_CPU
@@ -76,6 +79,7 @@
 #define PWR		4
 #define DELAY		5
 #define FAULT		6
+#define ACR		7
 #define LED_MASK	4
 #define FAULT_MASK	8
 #define TICKS		66
@@ -87,6 +91,11 @@
 /*
  * Macros
  */
+#define STATUS		1
+
+#define loadConfiguration()	 eeprom_read_byte((uint8_t *)STATUS)
+#define saveConfiguration(n)	 eeprom_write_byte((uint8_t *)STATUS,n)
+
 #define setBit(octet,bit)     ( octet |= (1<<bit))
 #define clearBit(octet,bit)   ( octet &= ~(1<<bit))
 #define toggleBit(octet,bit)  ( octet ^= (1<<bit))

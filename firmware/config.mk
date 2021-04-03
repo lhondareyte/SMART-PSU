@@ -11,4 +11,5 @@ OBJECTS   += smart-psu.o functions.o
 
 include Mk/$(MCU).mk
 
-CFLAGS    += -D__BREADBOARD__
+#CFLAGS    += -D__BREADBOARD__
+CFLAGS    += -D__ACRECOVERY__

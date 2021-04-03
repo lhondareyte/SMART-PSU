@@ -34,7 +34,7 @@ So, just press button to gracefully shutdown the system. After the configured de
 
 ## AC Recovery mode
 AC Power Recovery
-Allows you to set how the system reacts after AC power is restored to the system. By default, the AC Power Recovery option is set to last state. The other option is "power off".
+Allows you to set how the system reacts after AC power is restored to the system. By default, the AC Power Recovery option is set to "Power OFF". The other option is "last state".
 
 ## Nanobsd configuration
 Since all persistents filesystems are mount read-only, there is no need for graceful shutdown with nanobsd. But you probably need to save your configuration on shutdown. You can achieve this with the following script:
@@ -57,12 +57,14 @@ umount /cfg
 Edit ```/etc/psud.conf``` as follows:
 
 ```
-PSUD_PIN=1                    # Hardware dependent
+PSUD_PIN=1                    # Power switch pin, hardware dependent
 PSUD_CMD="/usr/local/bin/save_nanobsd.sh"
 
 PSUD_OPT="WaitAndShot"        # Wait for $PSUD_CMD to complete before
                               # poweroff. GPIO pin is toggle to HIGH 
-                              # after $CMD complete
+                              # after $CMD complete . Any other option
+                              # is ignored and power off is achieved after
+                              # $SHUTDOWN_TIMEOUT
 ```
 
 ## About files
@@ -70,7 +72,7 @@ PSUD_OPT="WaitAndShot"        # Wait for $PSUD_CMD to complete before
  psud      psud daemon sources
  kicad     KiCad schematic
  firmware  source code AVR attiny13/13a and atmega328p
- refs      Datasheets
+ refs      Some MOSFET P dtasheets
 ```
 ## LICENSE
 Released under the ISC Public License

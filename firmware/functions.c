@@ -30,12 +30,14 @@
 void setupHardware (void ) {
 
 	// Set ports direction
-	setBit(D_PORT,FAULT);   // Fault alarm
-	setBit(D_PORT,PWR);     // MOSFET Trigger
-	setBit(D_PORT,GPIO);    // To SBC GPIO
-	clearBit(D_PORT,PWR_SW);
-	// Pullup resistor on button pin
+	setBit(D_PORT,FAULT);     // Fault alarm
+	setBit(D_PORT,PWR);       // MOSFET Trigger
+	setBit(D_PORT,GPIO);      // To SBC GPIO
+	clearBit(D_PORT,PWR_SW);  // Power switch
+	clearBit(D_PORT,ACR);     // AC Recovery mode
+	// Pullup resistor on input pins
 	setBit(O_PORT,PWR_SW);
+	setBit(O_PORT,ACR);
 
 	// Configure INT0
 	clearBit(INTRGST,ISC00);
