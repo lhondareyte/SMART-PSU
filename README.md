@@ -9,7 +9,7 @@ This tested OK on
 * Raspberry PI 3
 
 ## How it's work?
-When plugging in, the board is poweroff and the switch device enter in sleep mode to reduce power consomption.  Just press the switch to power on the board. If you press again the button within 1.5 seconds, the board is poweroff immediatly. 
+When plugging in, the board is poweroff and the switch device enter in sleep mode to reduce power consumption.  Just press the switch to power on the board. If you press again the button within 1.5 seconds, the board is poweroff immediatly. 
 
 In normal operation (when operating system is running), the ```psud``` daemon wait for key pressed to perform specified action. The default configuration file is as follow:
 
