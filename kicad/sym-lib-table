@@ -1,2 +1,4 @@
 (sym_lib_table
+  (lib (name smart-psu)(type Legacy)(uri ${KIPRJMOD}/smart-psu.lib)(options "")(descr ""))
+)
 )
