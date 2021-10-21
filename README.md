@@ -69,10 +69,10 @@ PSUD_OPT="WaitAndShot"        # Wait for $PSUD_CMD to complete before
 
 ## About files
 ```
- psud      psud daemon sources
- kicad     KiCad schematic
- firmware  source code for AVR attiny13/13a and atmega328p
- refs      Some MOSFET-P datasheets
+ psud/        psud daemon sources
+ kicad/       KiCad schematic
+ firmware/    source code for AVR attiny13/13a and atmega328p
+ refs/        Some MOSFET-P datasheets
 ```
 
 ## LICENSE
