@@ -121,7 +121,7 @@ uint8_t volatile ticks;
 /*
  * Prototypes
  */
-void alarm(uint8_t);
+void blink(uint8_t, uint8_t);
 void setupHardware(void);
 void store(void);
 void shutdown(void);
@@ -129,5 +129,7 @@ void ms_wait(uint8_t);
 void startTimer(uint16_t);
 void stopTimer(void);
 void PowerOff(void);
+
+#define alarm(n) blink(FAULT,n)
 
 #endif /* __POWER_BUTTON_H__ */

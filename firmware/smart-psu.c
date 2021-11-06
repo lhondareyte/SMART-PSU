@@ -51,6 +51,7 @@ ISR (TIMER0_OVF_vect)
 }
 
 static void Power (void) {
+
 	/*
 	 *  Board is ON
 	 */
@@ -100,7 +101,7 @@ static void Power (void) {
 				saveConfiguration(pwr_state);
 #endif
 				switchOff();
-				alarm(12);
+				alarm(10);
 				break;
 			}
 		}
@@ -116,6 +117,10 @@ int main(void) {
 	ticks = 0;
 	ms_seconds = 0;
 	setupHardware();
+
+	/* Wait for PSU stabilization */
+        blink (PWR, 8);
+
 #if defined (__ACRECOVERY__)
 	if (bit_is_set(I_PORT, ACR)) {
 		pwr_state=OFF;

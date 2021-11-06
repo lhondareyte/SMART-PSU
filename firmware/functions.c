@@ -88,12 +88,13 @@ void stopTimer(void) {
 }
 
 /* 
- * Blinking alarm led
+ * Blinking a led
  */
-inline void alarm (uint8_t n) {
+inline void blink (uint8_t pin, uint8_t n) {
 	while(n) {
-		ms_wait(200);
-		toggleBit(O_PORT, FAULT);
+		ms_wait(250);
+		toggleBit(O_PORT, pin);
 		n--;
 	}
+	clearBit(O_PORT, pin);
 }
