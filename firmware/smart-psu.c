@@ -33,6 +33,81 @@
 uint8_t pwr_state=OFF;
 uint8_t os_is_running=NO;
 
+void ms_wait (uint8_t n) {
+	while (n) {
+		_delay_us(1000);
+		n--;
+	}
+}
+
+inline void shutdown (void) {
+#if defined (__BREADBOARD__)
+	setBit(O_PORT,GPIO);
+	ms_wait(250);
+	clearBit(O_PORT,GPIO);
+#else
+	clearBit(O_PORT,GPIO);
+	ms_wait(250);
+	setBit(O_PORT,GPIO);
+#endif
+	ms_wait(250);
+	clearBit(D_PORT,GPIO);    // Wait feedback from SBC
+}
+
+inline void PowerOff (void) {
+	clearBit(O_PORT,GPIO);
+	setBit(D_PORT,GPIO);      // no need feedback from SBC
+	switchOff();
+}
+
+void startTimer (uint16_t n) {
+	ms_seconds = n;
+	ticks = 0;
+	// No prescaler
+	TCCR0B = 0x01;
+}
+
+void stopTimer(void) {
+	ms_seconds = 0x0000;
+	ticks = 0;
+	TCCR0B = 0x00;
+}
+
+/* Blinking a led */
+
+inline void blink (uint8_t pin, uint8_t n) {
+	while(n) {
+		ms_wait(250);
+		toggleBit(O_PORT, pin);
+		n--;
+	}
+	clearBit(O_PORT, pin);
+}
+
+void setupHardware (void ) {
+
+        // Set ports direction
+        setBit(D_PORT,FAULT);     // Fault alarm
+        setBit(D_PORT,PWR);       // MOSFET Trigger
+        setBit(D_PORT,GPIO);      // To SBC GPIO
+        clearBit(D_PORT,PWR_SW);  // Power switch
+        clearBit(D_PORT,ACR);     // AC Recovery mode
+        // Pullup resistor on input pins
+        setBit(O_PORT,PWR_SW);
+        setBit(O_PORT,ACR);
+
+        // Configure INT0
+        clearBit(INTRGST,ISC00);
+        clearBit(INTRGST,ISC01);
+        enable_INT0();
+#if defined (__BREADBOARD__)
+        CLKPR=0x00;
+#endif
+
+        // Configure TIMER0 interuption
+        TIMSK0 |= (1<<TOIE0);
+}
+
 ISR (INT0_vect) {
 	// Wake-up MCU on key pressed
 }
@@ -52,9 +127,8 @@ ISR (TIMER0_OVF_vect)
 
 static void Power (void) {
 
-	/*
-	 *  Board is ON
-	 */
+	/*  Board is ON */
+
 	if (pwr_state == ON) {
 		if (os_is_running == YES) {
 			setBit(O_PORT,FAULT);
@@ -67,7 +141,7 @@ static void Power (void) {
 				}
 			}
 			pwr_state=OFF;
-#if defined (__ACRECOVERY__)
+#if defined (__AC_RECOVERY__)
 			saveConfiguration(pwr_state);
 #endif
 			os_is_running=NO;
@@ -77,13 +151,11 @@ static void Power (void) {
 		}
 	
 	}
-	/*
-	 *  Board is OFF
-	 */
+	/* Board is OFF */
 	else {
 		switchOn();
 		pwr_state=ON;
-#if defined (__ACRECOVERY__)
+#if defined (__AC_RECOVERY__)
 		saveConfiguration(pwr_state);
 #endif
 		loop_until_bit_is_set(I_PORT,PWR_SW);
@@ -97,7 +169,7 @@ static void Power (void) {
 			if ( bit_is_clear(I_PORT,PWR_SW)) {
 				stopTimer();
 				pwr_state=OFF;
-#if defined (__ACRECOVERY__)
+#if defined (__AC_RECOVERY__)
 				saveConfiguration(pwr_state);
 #endif
 				switchOff();
@@ -121,7 +193,7 @@ int main(void) {
 	/* Wait for PSU stabilization */
         blink (PWR, 8);
 
-#if defined (__ACRECOVERY__)
+#if defined (__AC_RECOVERY__)
 	if (bit_is_set(I_PORT, ACR)) {
 		pwr_state=OFF;
 	}

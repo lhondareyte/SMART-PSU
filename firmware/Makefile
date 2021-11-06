@@ -8,7 +8,7 @@ include config.mk
 
 CC         = avr-gcc
 OBJCOPY    = avr-objcopy
-CFLAGS    += -Os -g -mmcu=$(MCU) -Wall -Wstrict-prototypes -fcommon
+CFLAGS    += -Os -g -mmcu=$(MCU) -Wall -Wstrict-prototypes
 ASMFLAGS   = -Os -mmcu=$(MCU) -x assembler-with-cpp -gstabs
 ASMFLAGS  += -I /usr/local/avr/include
 
