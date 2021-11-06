@@ -2,7 +2,7 @@
 #  $Id$
 # 
 PRG	= psud
-CFLAGS	= -O2 -Wall -fcommon
+CFLAGS	= -O2 -Wall
 
 LDFLAGS	= -lgpio
 

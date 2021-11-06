@@ -34,8 +34,11 @@
 #include <syslog.h>
 
 #include "psud.h"
+#include "config.h"
 
 FILE *lockfile;
+
+struct config psu_config;
 
 void psud_quit(int r) {
 	if ( r == SIGHUP ) {

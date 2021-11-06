@@ -20,19 +20,16 @@
  * SOFTWARE.
  */
 
-#ifndef __PSUD_H__
-#define __PSUD_H__
+#ifndef __CONFIG_H__
+#define __CONFIG_H__
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+struct config {
+	char pin[2];
+	char cmd[MAXBUF];
+	char opt[MAXBUF];
+};
 
-#define UP      1
-#define DOWN    0
+int get_config(char *, struct config *);
 
-#define CONFILE "/etc/psud.conf"
-#define LOCK 	"/var/run/psud.pid"
-#define MAXBUF 256
-
-#endif // __PSUD_H_
+#endif // __CONFIG_H__
 

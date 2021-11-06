@@ -21,6 +21,7 @@
  */
 
 #include "psud.h"
+#include "config.h"
 
 void removeDoubleCommas(char *s) {
     int j, n = strlen(s);
