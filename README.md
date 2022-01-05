@@ -58,7 +58,7 @@ Edit ```/etc/psud.conf``` as follows:
 
 ```
 PSUD_PIN=1                    # Power switch pin, hardware dependent
-PSUD_CMD="/usr/local/bin/save_nanobsd.sh"
+PSUD_CMD="/usr/local/bin/save_configuration.sh"
 
 PSUD_OPT="WaitAndShot"        # Wait for $PSUD_CMD to complete before
                               # poweroff. GPIO pin is toggle to HIGH 
@@ -76,4 +76,4 @@ PSUD_OPT="WaitAndShot"        # Wait for $PSUD_CMD to complete before
 ```
 
 ## LICENSE
-Released under the ISC Public License
+Released under the MIT License
