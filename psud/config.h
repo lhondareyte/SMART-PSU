@@ -23,6 +23,8 @@
 #ifndef __CONFIG_H__
 #define __CONFIG_H__
 
+#define MAXBUF 256
+
 struct config {
 	char pin[2];
 	char cmd[MAXBUF];

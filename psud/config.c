@@ -20,7 +20,9 @@
  * SOFTWARE.
  */
 
-#include "psud.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "config.h"
 
 void removeDoubleCommas(char *s) {
