@@ -27,6 +27,6 @@ clean:
 	@printf "\tdone.\n"
 
 install:
-	install -m 755 -s $(PRG) $(BINDIR)
-#	install -m 755 etc/$(PRG) $(ETCDIR)/rc.d
-	install -m 644 etc/$(PRG).conf $(ETCDIR)/$(PRG).conf.sample
+	@install -m 755 -s $(PRG) $(BINDIR)
+	@install -m 755 etc/$(PRG) $(ETCDIR)/rc.d
+	@install -m 644 etc/$(PRG).conf $(ETCDIR)/$(PRG).conf.sample
